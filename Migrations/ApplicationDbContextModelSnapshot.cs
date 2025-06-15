@@ -102,8 +102,15 @@ namespace FilmDiziSitesi.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Sifre")
                         .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Token")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");

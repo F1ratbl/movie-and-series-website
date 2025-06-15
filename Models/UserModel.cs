@@ -10,6 +10,12 @@ namespace FilmDiziSitesi.Models
 
         public string Sifre { get; set; }
 
+        // Varsayılan olarak "User" atanır
+        public string Role { get; set; } = "User";
+
+        // Token alanı eklendi
+         public string? Token { get; set; }
+
         public DateTime KayitTarihi { get; set; } = DateTime.Now;
     }
 }

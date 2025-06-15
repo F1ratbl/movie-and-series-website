@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using FilmDiziSitesi.Models;
-using System.Collections.Generic;
+using FilmDiziSitesi.Data;  // ApplicationDbContext burada
 using System.Linq;
 
 namespace FilmDiziSitesi.Controllers
@@ -9,55 +9,78 @@ namespace FilmDiziSitesi.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private static List<UserModel> users = new List<UserModel>();
-        private static int nextId = 1;
+        private readonly ApplicationDbContext _context;
 
-        [HttpGet]
-        public ActionResult<IEnumerable<UserModel>> Get()
+        // DbContext'i constructor ile alıyoruz (dependency injection)
+        public UsersController(ApplicationDbContext context)
         {
+            _context = context;
+        }
+
+        // GET: api/users
+        [HttpGet]
+        public IActionResult Get()
+        {
+            var users = _context.Users.ToList();
             return Ok(users);
         }
 
+        // GET: api/users/{id}
         [HttpGet("{id}")]
-        public ActionResult<UserModel> Get(int id)
+        public IActionResult Get(int id)
         {
-            var user = users.FirstOrDefault(u => u.Id == id);
+            var user = _context.Users.FirstOrDefault(u => u.Id == id);
             if (user == null)
                 return NotFound();
+
             return Ok(user);
         }
 
+        // POST: api/users
         [HttpPost]
-        public ActionResult<UserModel> Post([FromBody] UserModel user)
+        public IActionResult Post([FromBody] UserModel user)
         {
-            user.Id = nextId++;
+            if (user == null)
+                return BadRequest();
+
+            // Kaydetme tarihini güncelle (isteğe bağlı)
             user.KayitTarihi = DateTime.Now;
-            users.Add(user);
+
+            _context.Users.Add(user);
+            _context.SaveChanges();
+
             return CreatedAtAction(nameof(Get), new { id = user.Id }, user);
         }
 
+        // PUT: api/users/{id}
         [HttpPut("{id}")]
         public IActionResult Put(int id, [FromBody] UserModel updatedUser)
         {
-            var user = users.FirstOrDefault(u => u.Id == id);
+            var user = _context.Users.FirstOrDefault(u => u.Id == id);
             if (user == null)
                 return NotFound();
 
             user.KullaniciAdi = updatedUser.KullaniciAdi;
             user.Email = updatedUser.Email;
             user.Sifre = updatedUser.Sifre;
+            user.Role = updatedUser.Role;
+
+            _context.SaveChanges();
 
             return NoContent();
         }
 
+        // DELETE: api/users/{id}
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
-            var user = users.FirstOrDefault(u => u.Id == id);
+            var user = _context.Users.FirstOrDefault(u => u.Id == id);
             if (user == null)
                 return NotFound();
 
-            users.Remove(user);
+            _context.Users.Remove(user);
+            _context.SaveChanges();
+
             return NoContent();
         }
     }
