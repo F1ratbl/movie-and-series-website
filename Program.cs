@@ -3,42 +3,57 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 🔧 Servisler ekleniyor
+// 🚀 MVC yapısı için Controller + View desteği ekleniyor
 builder.Services.AddControllersWithViews();
 
-// 🔗 DbContext bağlantısı (SQLite)
+// 🗃️ Entity Framework - SQLite veritabanı bağlantısı ayarlanıyor
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// 🔍 Swagger (opsiyonel ama önerilir - API testleri için)
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-var dbPath = Path.Combine(Directory.GetCurrentDirectory(), "veritabani.db");
-Console.WriteLine($"Kullanılan veritabanı: {dbPath}");
+// 🔐 Authentication servisi ekleniyor (Cookie tabanlı kimlik doğrulama)
+builder.Services.AddAuthentication("MyCookieAuth")
+    .AddCookie("MyCookieAuth", options =>
+    {
+        options.LoginPath = "/Account/Login";         // Giriş yapılmamışsa yönlendirilecek sayfa
+        options.AccessDeniedPath = "/Account/AccessDenied";  // Yetkisiz erişim sayfası
+    });
 
+// 🔐 Authorization servisi ekleniyor (roller ve politikalar için)
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy =>
+        policy.RequireRole("Admin"));       // Sadece "Admin" rolü olan kullanıcılar erişebilir
+});
+
+// 🛠️ Uygulama oluşturuluyor
 var app = builder.Build();
 
-// 🌐 Orta katmanlar (Middleware)
+// 🌐 Geliştirme ortamında değilsek hata sayfası ve güvenlik ayarları etkinleştiriliyor
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Home/Error");
-    app.UseHsts(); // Güvenlik için önerilir
-}
-else
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseExceptionHandler("/Home/Error"); // Hatalar için özel sayfa
+    app.UseHsts();                          // Tarayıcıya HTTPS kullanmasını önerir
 }
 
-app.UseHttpsRedirection();     // HTTP -> HTTPS yönlendirmesi
-app.UseStaticFiles();          // wwwroot içeriği için
+// 🔐 HTTPS yönlendirmesi zorunlu kılınıyor
+app.UseHttpsRedirection();
 
-app.UseRouting();              // Rotalama sistemi
-app.UseAuthorization();        // Yetkilendirme (ileride lazım olabilir)
+// 🖼️ wwwroot klasöründen statik dosyalar (css/js/img vs.) servis edilir
+app.UseStaticFiles();
 
-// 🌐 MVC rotası
+// 🧭 Rotalama (hangi URL hangi controller'a gider?)
+app.UseRouting();
+
+// 🔐 Authentication middleware mutlaka Authorization'dan önce gelmeli
+app.UseAuthentication();
+
+// 🔐 Yetkilendirme middleware ([Authorize] attribute için)
+app.UseAuthorization();
+
+// 🧭 Varsayılan rota: /Home/Index
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+// ▶️ Uygulama başlatılıyor
 app.Run();
