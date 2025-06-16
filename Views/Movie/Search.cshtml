@@ -1,16 +1,16 @@
-@model IEnumerable<movieWeb.Models.MovieModel>
+@model IEnumerable<FilmDiziSitesi.Models.MovieModel>
 @{
-    ViewData["Title"] = "Search Results";
+    ViewData["Title"] = "Arama Sonuçları";
 }
 
 <div class="container">
     <div class="search-results">
-        <h2 class="mb-4">Search Results for "@ViewBag.SearchQuery"</h2>
+        <h2 class="mb-4">"@ViewBag.SearchQuery" için arama sonuçları</h2>
 
         @if (!Model.Any())
         {
             <div class="alert alert-info">
-                No results found for your search. Try different keywords or browse our categories.
+                Aramanız için sonuç bulunamadı. Farklı anahtar kelimeler deneyin veya kategorilerimizi keşfedin.
             </div>
         }
         else
@@ -20,22 +20,22 @@
                 {
                     <div class="col-md-3 mb-4">
                         <div class="card h-100">
-                            <img src="@item.PosterUrl" class="card-img-top" alt="@item.Title">
+                            <img src="@item.AfişUrl" class="card-img-top" alt="@item.Ad">
                             <div class="card-body">
-                                <h5 class="card-title">@item.Title</h5>
+                                <h5 class="card-title">@item.Ad</h5>
                                 <div class="rating mb-2">
                                     @for (int i = 1; i <= 5; i++)
                                     {
-                                        <i class="bi bi-star@(i <= item.Rating ? "-fill" : "")"></i>
+                                        <i class="bi bi-star@(i <= item.Puan ? "-fill" : "")"></i>
                                     }
-                                    <span class="ms-2">@item.Rating.ToString("F1")</span>
+                                    <span class="ms-2">@item.Puan.ToString("F1")</span>
                                 </div>
-                                <p class="card-text">@item.ShortDescription</p>
+                                <p class="card-text">@item.Açıklama</p>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <span class="badge bg-primary">@item.Category</span>
-                                    <small class="text-muted">@item.ReleaseDate.Year</small>
+                                    <span class="badge bg-primary">@item.Tür</span>
+                                    <small class="text-muted">@item.Yil</small>
                                 </div>
-                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary mt-3 w-100">View Details</a>
+                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-primary mt-3 w-100">Detayları Gör</a>
                             </div>
                         </div>
                     </div>
@@ -44,16 +44,14 @@
         }
 
         <div class="mt-4">
-            <h4>Try searching in categories:</h4>
+            <h4>Kategorilerde arama yapmayı deneyin:</h4>
             <div class="d-flex flex-wrap gap-2 mt-3">
-                <a asp-action="Category" asp-route-category="Action" class="category-badge">Action</a>
-                <a asp-action="Category" asp-route-category="Comedy" class="category-badge">Comedy</a>
-                <a asp-action="Category" asp-route-category="Drama" class="category-badge">Drama</a>
-                <a asp-action="Category" asp-route-category="Horror" class="category-badge">Horror</a>
-                <a asp-action="Category" asp-route-category="Sci-Fi" class="category-badge">Sci-Fi</a>
-                <a asp-action="Category" asp-route-category="Romance" class="category-badge">Romance</a>
-                <a asp-action="Category" asp-route-category="Documentary" class="category-badge">Documentary</a>
-                <a asp-action="Category" asp-route-category="Animation" class="category-badge">Animation</a>
+                <a href="#" class="badge bg-primary text-decoration-none">Aksiyon</a>
+                <a href="#" class="badge bg-primary text-decoration-none">Komedi</a>
+                <a href="#" class="badge bg-primary text-decoration-none">Drama</a>
+                <a href="#" class="badge bg-primary text-decoration-none">Gerilim</a>
+                <a href="#" class="badge bg-primary text-decoration-none">Bilim Kurgu</a>
+                <a href="#" class="badge bg-primary text-decoration-none">Romantik</a>
             </div>
         </div>
     </div>

@@ -19,6 +19,8 @@ html {
 
 body {
   margin-bottom: 60px;
+  background: #181a1b !important;
+  color: #e0e0e0 !important;
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
@@ -28,4 +30,48 @@ body {
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
+}
+
+.navbar, .navbar-nav, .navbar-brand, .nav-link, .btn, .form-control {
+  background-color: #23272b !important;
+  color: #e0e0e0 !important;
+  border-color: #444 !important;
+}
+
+.card {
+  background: #23272b !important;
+  color: #e0e0e0 !important;
+  border-color: #444 !important;
+}
+
+.form-control {
+  background: #23272b !important;
+  color: #e0e0e0 !important;
+  border-color: #444 !important;
+}
+
+.btn-primary, .btn-outline-light {
+  background: #444 !important;
+  color: #fff !important;
+  border-color: #666 !important;
+}
+
+.btn-dark {
+  background: #181a1b !important;
+  color: #fff !important;
+  border-color: #444 !important;
+}
+
+.category-card, .movie-card {
+  background: #23272b !important;
+  color: #e0e0e0 !important;
+}
+
+.section-title::after {
+  background: linear-gradient(45deg, #4ecdc4, #ff6b6b);
+}
+
+.badge.bg-primary {
+  background: #4ecdc4 !important;
+  color: #181a1b !important;
 }

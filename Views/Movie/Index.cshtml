@@ -1,6 +1,5 @@
-@model MovieListViewModel
 @{
-    ViewData["Title"] = "Movies";
+    ViewData["Title"] = "Filmler";
 }
 
 <div class="container">
@@ -9,38 +8,45 @@
         <div class="col-md-3">
             <div class="card mb-4">
                 <div class="card-body">
-                    <h5 class="card-title mb-3">Filters</h5>
+                    <h5 class="card-title mb-3">Filtreler</h5>
                     <form asp-controller="Movie" asp-action="Index" method="get">
                         <div class="mb-3">
-                            <label class="form-label">Category</label>
-                            <select name="category" class="form-select" asp-items="@Model.Categories">
-                                <option value="">All Categories</option>
+                            <label class="form-label">Kategori</label>
+                            <select name="category" class="form-select">
+                                <option value="">Tüm Kategoriler</option>
+                                <option value="Aksiyon">Aksiyon</option>
+                                <option value="Komedi">Komedi</option>
+                                <option value="Drama">Drama</option>
+                                <option value="Gerilim">Gerilim</option>
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Year</label>
-                            <select name="year" class="form-select" asp-items="@Model.Years">
-                                <option value="">All Years</option>
+                            <label class="form-label">Yıl</label>
+                            <select name="year" class="form-select">
+                                <option value="">Tüm Yıllar</option>
+                                <option value="2024">2024</option>
+                                <option value="2023">2023</option>
+                                <option value="2022">2022</option>
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Rating</label>
+                            <label class="form-label">Puan</label>
                             <select name="minRating" class="form-select">
-                                <option value="">Any Rating</option>
-                                <option value="4">4+ Stars</option>
-                                <option value="3">3+ Stars</option>
-                                <option value="2">2+ Stars</option>
+                                <option value="">Herhangi Bir Puan</option>
+                                <option value="4">4+ Yıldız</option>
+                                <option value="3">3+ Yıldız</option>
+                                <option value="2">2+ Yıldız</option>
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Sort By</label>
+                            <label class="form-label">Sıralama</label>
                             <select name="sortBy" class="form-select">
-                                <option value="rating">Rating</option>
-                                <option value="year">Year</option>
-                                <option value="title">Title</option>
+                                <option value="rating">Puana Göre</option>
+                                <option value="year">Yıla Göre</option>
+                                <option value="title">Başlığa Göre</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary w-100">Apply Filters</button>
+                        <button type="submit" class="btn btn-primary w-100">Filtreleri Uygula</button>
                     </form>
                 </div>
             </div>
@@ -49,114 +55,62 @@
         <!-- Movie List -->
         <div class="col-md-9 bg-dark text-light rounded p-3">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2>@((Model.Movies.Any() && Model.Movies.First().IsSeries) ? "Series" : "Movies")</h2>
+                <h2>Filmler</h2>
                 <div class="btn-group">
-                    <a asp-action="Index" asp-route-view="grid" class="btn btn-outline-light @(Model.View == "grid" ? "active" : "")">
+                    <a href="#" class="btn btn-outline-light active">
                         <i class="bi bi-grid"></i>
                     </a>
-                    <a asp-action="Index" asp-route-view="list" class="btn btn-outline-light @(Model.View == "list" ? "active" : "")">
+                    <a href="#" class="btn btn-outline-light">
                         <i class="bi bi-list"></i>
                     </a>
                 </div>
             </div>
 
-            @if (Model.View == "grid")
-            {
-                <div class="row">
-                    @foreach (var movie in Model.Movies)
-                    {
-                        <div class="col-md-4 mb-4">
-                            <div class="card h-100 bg-dark text-light">
-                                <img src="@movie.PosterUrl" class="card-img-top" alt="@movie.Title">
-                                <div class="card-body">
-                                    <h5 class="card-title">@movie.Title</h5>
-                                    <div class="rating mb-2">
-                                        @for (int i = 1; i <= 5; i++)
-                                        {
-                                            <i class="bi bi-star@(i <= movie.Rating ? "-fill" : "")"></i>
-                                        }
-                                        <span class="ms-2">@movie.Rating.ToString("F1")</span>
-                                    </div>
-                                    <p class="card-text">@movie.ShortDescription</p>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span class="badge bg-primary">@movie.Category</span>
-                                        <small class="text-muted">@movie.ReleaseDate.Year</small>
-                                    </div>
-                                    <a asp-action="Details" asp-route-id="@movie.Id" class="btn btn-primary mt-3 w-100">View Details</a>
+            <div class="row">
+                @for (int i = 1; i <= 9; i++)
+                {
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 bg-dark text-light">
+                            <img src="https://via.placeholder.com/300x450/2c3e50/ffffff?text=Film+@i" class="card-img-top" alt="Film @i">
+                            <div class="card-body">
+                                <h5 class="card-title">Örnek Film @i</h5>
+                                <div class="rating mb-2">
+                                    @for (int j = 1; j <= 5; j++)
+                                    {
+                                        <i class="bi bi-star@(j <= 4 ? "-fill" : "")"></i>
+                                    }
+                                    <span class="ms-2">8.@i</span>
                                 </div>
+                                <p class="card-text">Bu bir örnek film açıklamasıdır. Film hakkında kısa bilgi verir.</p>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="badge bg-primary">Aksiyon</span>
+                                    <small class="text-muted">2024</small>
+                                </div>
+                                <a href="#" class="btn btn-primary mt-3 w-100">Detayları Gör</a>
                             </div>
                         </div>
-                    }
-                </div>
-            }
-            else
-            {
-                <div class="list-group">
-                    @foreach (var movie in Model.Movies)
-                    {
-                        <div class="list-group-item list-group-item-action bg-dark text-light">
-                            <div class="row align-items-center">
-                                <div class="col-md-2">
-                                    <img src="@movie.PosterUrl" class="img-fluid rounded" alt="@movie.Title">
-                                </div>
-                                <div class="col-md-10">
-                                    <div class="d-flex justify-content-between align-items-start">
-                                        <div>
-                                            <h5 class="mb-1">@movie.Title</h5>
-                                            <div class="rating mb-2">
-                                                @for (int i = 1; i <= 5; i++)
-                                                {
-                                                    <i class="bi bi-star@(i <= movie.Rating ? "-fill" : "")"></i>
-                                                }
-                                                <span class="ms-2">@movie.Rating.ToString("F1")</span>
-                                            </div>
-                                            <p class="mb-1">@movie.ShortDescription</p>
-                                            <div class="d-flex gap-2">
-                                                <span class="badge bg-primary">@movie.Category</span>
-                                                <small class="text-muted">@movie.ReleaseDate.Year</small>
-                                            </div>
-                                        </div>
-                                        <a asp-action="Details" asp-route-id="@movie.Id" class="btn btn-primary">View Details</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    }
-                </div>
-            }
+                    </div>
+                }
+            </div>
 
             <!-- Pagination -->
             <nav class="mt-4">
                 <ul class="pagination justify-content-center">
-                    @if (Model.CurrentPage > 1)
-                    {
-                        <li class="page-item">
-                            <a class="page-link" asp-action="Index" asp-route-page="@(Model.CurrentPage - 1)">Previous</a>
-                        </li>
-                    }
-
-                    @for (int i = 1; i <= Model.TotalPages; i++)
-                    {
-                        if (i == 1 || i == Model.TotalPages || (i >= Model.CurrentPage - 2 && i <= Model.CurrentPage + 2))
-                        {
-                            <li class="page-item @(i == Model.CurrentPage ? "active" : "")">
-                                <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
-                            </li>
-                        }
-                        else if (i == Model.CurrentPage - 3 || i == Model.CurrentPage + 3)
-                        {
-                            <li class="page-item disabled">
-                                <span class="page-link">...</span>
-                            </li>
-                        }
-                    }
-
-                    @if (Model.CurrentPage < Model.TotalPages)
-                    {
-                        <li class="page-item">
-                            <a class="page-link" asp-action="Index" asp-route-page="@(Model.CurrentPage + 1)">Next</a>
-                        </li>
-                    }
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">Önceki</a>
+                    </li>
+                    <li class="page-item active">
+                        <a class="page-link" href="#">1</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">2</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">3</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Sonraki</a>
+                    </li>
                 </ul>
             </nav>
         </div>
