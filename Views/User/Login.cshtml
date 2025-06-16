@@ -1,0 +1,54 @@
+@model movieWeb.Models.LoginModel
+@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card bg-dark text-light">
+                <div class="card-header">
+                    <h3 class="mb-0">Giriş Yap</h3>
+                </div>
+                <div class="card-body">
+                    @if (TempData["ResetEmailSent"] != null)
+                    {
+                        <div class="alert alert-success">
+                            Şifre sıfırlama bağlantısı e-posta adresinize gönderildi.
+                        </div>
+                    }
+                    @if (TempData["PasswordResetSuccess"] != null)
+                    {
+                        <div class="alert alert-success">
+                            Şifreniz başarıyla sıfırlandı. Yeni şifrenizle giriş yapabilirsiniz.
+                        </div>
+                    }
+                    @if (TempData["EmailVerified"] != null)
+                    {
+                        <div class="alert alert-success">
+                            E-posta adresiniz başarıyla doğrulandı. Giriş yapabilirsiniz.
+                        </div>
+                    }
+
+                    <form asp-action="Login" method="post">
+                        <div class="mb-3">
+                            <label for="email" class="form-label">E-posta</label>
+                            <input type="email" class="form-control" id="email" name="email" required />
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Şifre</label>
+                            <input type="password" class="form-control" id="password" name="password" required />
+                        </div>
+                        <div class="mb-3">
+                            <a asp-action="ForgotPassword" class="text-light">Şifremi Unuttum</a>
+                        </div>
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary">Giriş Yap</button>
+                            <a asp-action="Register" class="btn btn-outline-light">Hesap Oluştur</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

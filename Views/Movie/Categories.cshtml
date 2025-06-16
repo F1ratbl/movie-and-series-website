@@ -1,0 +1,20 @@
+@model List<string>
+@{
+    ViewData["Title"] = "Categories";
+}
+<div class="container py-5">
+    <h2 class="mb-4">Kategoriler</h2>
+    <div class="row">
+        @foreach (var category in Model)
+        {
+            <div class="col-md-3 mb-3">
+                <div class="card h-100 bg-dark text-light text-center">
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                        <h5 class="card-title">@category</h5>
+                        <a asp-action="Category" asp-route-category="@category" class="btn btn-primary mt-2">Filmleri Gör</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div> 
