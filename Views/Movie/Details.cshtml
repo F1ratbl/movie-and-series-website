@@ -1,0 +1,163 @@
+@model MovieModel
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4">
+            <img src="@Model.PosterUrl" class="img-fluid rounded" alt="@Model.Title">
+        </div>
+        <div class="col-md-8">
+            <h1>@Model.Title</h1>
+            <div class="rating mb-3">
+                @for (int i = 1; i <= 5; i++)
+                {
+                    <i class="bi bi-star@(i <= Model.Rating ? "-fill" : "")"></i>
+                }
+                <span class="ms-2">@Model.Rating.ToString("F1")</span>
+            </div>
+            <p class="text-muted">
+                <i class="bi bi-calendar"></i> @Model.ReleaseDate.Year
+                <i class="bi bi-clock ms-3"></i> @Model.Duration dakika
+                <i class="bi bi-film ms-3"></i> @Model.Category
+            </p>
+            <p>@Model.Description</p>
+            <div class="mb-3">
+                <strong>Yönetmen:</strong> @Model.Director
+            </div>
+            <div class="mb-3">
+                <strong>Oyuncular:</strong> @Model.Cast
+            </div>
+            <div class="mb-3">
+                <strong>Dil:</strong> @Model.Language
+            </div>
+            @if (Model.IsSeries)
+            {
+                <div class="mb-3">
+                    <strong>Sezon Sayısı:</strong> @Model.SeasonCount
+                    <strong class="ms-3">Bölüm Sayısı:</strong> @Model.EpisodeCount
+                </div>
+            }
+            <a href="@Model.TrailerUrl" class="btn btn-primary" target="_blank">
+                <i class="bi bi-play-circle"></i> Fragmanı İzle
+            </a>
+        </div>
+    </div>
+
+    <!-- Yorumlar -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <h3>Yorumlar</h3>
+            @if (User.Identity?.IsAuthenticated == true)
+            {
+                <form asp-controller="Movie" asp-action="AddComment" method="post" class="mb-4">
+                    <input type="hidden" name="movieId" value="@Model.Id" />
+                    <div class="mb-3">
+                        <label class="form-label">Başlık</label>
+                        <input type="text" name="title" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Yorum</label>
+                        <textarea name="content" class="form-control" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Puan</label>
+                        <div class="star-rating">
+                            <input type="hidden" name="rating" id="ratingInput" value="0" />
+                            <span class="star" data-value="1">&#9733;</span>
+                            <span class="star" data-value="2">&#9733;</span>
+                            <span class="star" data-value="3">&#9733;</span>
+                            <span class="star" data-value="4">&#9733;</span>
+                            <span class="star" data-value="5">&#9733;</span>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Yorum Yap</button>
+                </form>
+                <script>
+                    document.addEventListener('DOMContentLoaded', function () {
+                        const stars = document.querySelectorAll('.star-rating .star');
+                        const ratingInput = document.getElementById('ratingInput');
+                        stars.forEach((star, idx) => {
+                            star.addEventListener('click', function () {
+                                const value = this.getAttribute('data-value');
+                                ratingInput.value = value;
+                                stars.forEach(s => s.classList.remove('selected'));
+                                for (let i = 0; i < value; i++) {
+                                    stars[i].classList.add('selected');
+                                }
+                            });
+                        });
+                    });
+                </script>
+                <style>
+                    .star-rating .star {
+                        font-size: 2rem;
+                        color: #ccc;
+                        cursor: pointer;
+                        transition: color 0.2s;
+                    }
+                    .star-rating .star.selected,
+                    .star-rating .star:hover,
+                    .star-rating .star:hover ~ .star {
+                        color: #ffd700;
+                    }
+                </style>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    Yorum yapabilmek için <a asp-controller="User" asp-action="Login">giriş yapın</a>.
+                </div>
+            }
+
+            <div class="list-group">
+                @foreach (var comment in Model.Comments.OrderByDescending(c => c.CreatedAt))
+                {
+                    <div class="list-group-item bg-dark text-light border-secondary">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1">@comment.Title</h6>
+                                <small class="text-muted">@comment.User?.UserName - @comment.CreatedAt.ToString("dd.MM.yyyy HH:mm")</small>
+                            </div>
+                            <div class="rating">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <i class="bi bi-star@(i <= comment.Rating ? "-fill" : "")"></i>
+                                }
+                            </div>
+                        </div>
+                        <p class="mt-2 mb-0">@comment.Content</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .rating {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+    }
+    
+    .rating input {
+        display: none;
+    }
+    
+    .rating label {
+        font-size: 30px;
+        color: #ddd;
+        cursor: pointer;
+    }
+    
+    .rating input:checked ~ label {
+        color: #ffd700;
+    }
+    
+    .rating label:hover,
+    .rating label:hover ~ label {
+        color: #ffd700;
+    }
+</style>

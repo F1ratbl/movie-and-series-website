@@ -1,0 +1,86 @@
+@using movieWeb.Models
+@model movieWeb.Models.UserModel
+@{
+    ViewData["Title"] = "Profile";
+}
+<link rel="stylesheet" href="/css/profile-custom.css" />
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="profile-card">
+                <img src="@(Model.AvatarUrl ?? "/images/default-avatar.png")" class="profile-avatar" alt="@Model.UserName">
+                <div class="profile-info">
+                    <h3>@Model.UserName</h3>
+                    <p>@Model.Email</p>
+                </div>
+                <div class="profile-stats">
+                    <div class="profile-stat">
+                        <div class="stat-label">Comments</div>
+                        <div class="stat-value">@Model.Comments?.Count() ?? 0</div>
+                    </div>
+                    <div class="profile-stat">
+                        <div class="stat-label">Ratings</div>
+                        <div class="stat-value">@Model.Ratings?.Count() ?? 0</div>
+                    </div>
+                </div>
+                <a asp-action="EditProfile" class="btn btn-danger w-100 mt-2">Edit Profile</a>
+            </div>
+        </div>
+        <div class="col-lg-8 col-md-12">
+            <div class="profile-section mb-4">
+                <h5><i class="bi bi-chat-left-text me-2"></i>Recent Comments</h5>
+                @if (ViewBag.LastComments != null && ViewBag.LastComments.Count > 0)
+                {
+                    foreach (var comment in ViewBag.LastComments)
+                    {
+                        <div class="profile-comment">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="fw-bold">@comment.Movie.Title</span>
+                                <span class="text-muted" style="font-size:0.9em;">@comment.CreatedAt.ToString("MMM dd, yyyy")</span>
+                            </div>
+                            <div class="mb-1">@comment.Title</div>
+                            <div class="mb-1">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <i class="bi bi-star@(i <= comment.Rating ? "-fill" : "")"></i>
+                                }
+                                <span class="ms-2">@comment.Rating</span>
+                            </div>
+                            <div class="text-secondary">@comment.Content</div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="text-muted">No comments yet.</div>
+                }
+            </div>
+            <div class="profile-section">
+                <h5><i class="bi bi-star me-2"></i>Recent Ratings</h5>
+                @if (ViewBag.LastRatings != null && ViewBag.LastRatings.Count > 0)
+                {
+                    foreach (var rating in ViewBag.LastRatings)
+                    {
+                        <div class="profile-rating">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="fw-bold">@rating.Movie.Title</span>
+                                <span class="text-muted" style="font-size:0.9em;">@rating.CreatedAt.ToString("MMM dd, yyyy")</span>
+                            </div>
+                            <div>
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <i class="bi bi-star@(i <= rating.Score ? "-fill" : "")"></i>
+                                }
+                                <span class="ms-2">@rating.Score</span>
+                            </div>
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="text-muted">No ratings yet.</div>
+                }
+            </div>
+        </div>
+    </div>
+</div> 
