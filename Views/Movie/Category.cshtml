@@ -1,4 +1,4 @@
-@model IEnumerable<movieWeb.Models.MovieModel>
+@model IEnumerable<FilmDiziSitesi.Models.MovieModel>
 @{
     ViewData["Title"] = ViewBag.Category;
 }
@@ -6,7 +6,7 @@
 <div class="container">
     <div class="category-header mb-4">
         <h2>@ViewBag.Category</h2>
-        <p class="text-muted">@Model.Count() movies in this category</p>
+        <p class="text-muted">@Model.Count() film bu kategoride</p>
     </div>
 
     <div class="row">
@@ -14,25 +14,21 @@
         {
             <div class="col-md-3 mb-4">
                 <div class="card h-100">
-                    <img src="@movie.PosterUrl" class="card-img-top" alt="@movie.Title">
+                    <img src="@movie.AfişUrl" class="card-img-top" alt="@movie.Ad">
                     <div class="card-body">
-                        <h5 class="card-title">@movie.Title</h5>
+                        <h5 class="card-title">@movie.Ad</h5>
                         <div class="rating mb-2">
                             @for (int i = 1; i <= 5; i++)
                             {
-                                <i class="bi bi-star@(i <= movie.Rating ? "-fill" : "")"></i>
+                                <i class="bi bi-star@(i <= movie.Puan ? "-fill" : "")"></i>
                             }
-                            <span class="ms-2">@movie.Rating.ToString("F1")</span>
+                            <span class="ms-2">@movie.Puan.ToString("F1")</span>
                         </div>
-                        <p class="card-text">@movie.ShortDescription</p>
+                        <p class="card-text">@movie.Açıklama</p>
                         <div class="d-flex justify-content-between align-items-center">
-                            <small class="text-muted">@movie.ReleaseDate.Year</small>
-                            @if (movie.IsSeries)
-                            {
-                                <span class="badge bg-info">Series</span>
-                            }
+                            <small class="text-muted">@movie.Yil</small>
                         </div>
-                        <a asp-action="Details" asp-route-id="@movie.Id" class="btn btn-primary mt-3 w-100">View Details</a>
+                        <a asp-action="Details" asp-route-id="@movie.Id" class="btn btn-primary mt-3 w-100">Detayları Gör</a>
                     </div>
                 </div>
             </div>
@@ -40,12 +36,12 @@
     </div>
 
     <div class="mt-4">
-        <h4>Browse other categories:</h4>
+        <h4>Diğer kategorileri keşfedin:</h4>
         <div class="d-flex flex-wrap gap-2 mt-3">
-            @foreach (var category in ViewBag.Categories)
-            {
-                <a asp-action="Category" asp-route-category="@category" class="category-badge">@category</a>
-            }
+            <a href="#" class="badge bg-primary text-decoration-none">Aksiyon</a>
+            <a href="#" class="badge bg-primary text-decoration-none">Komedi</a>
+            <a href="#" class="badge bg-primary text-decoration-none">Drama</a>
+            <a href="#" class="badge bg-primary text-decoration-none">Gerilim</a>
         </div>
     </div>
 </div> 

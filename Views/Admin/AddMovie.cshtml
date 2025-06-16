@@ -15,46 +15,39 @@
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
                         <div class="mb-3">
-                            <label asp-for="Title" class="form-label">Başlık</label>
-                            <input asp-for="Title" class="form-control" />
-                            <span asp-validation-for="Title" class="text-danger"></span>
+                            <label asp-for="Ad" class="form-label">Başlık</label>
+                            <input asp-for="Ad" class="form-control" />
+                            <span asp-validation-for="Ad" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="Description" class="form-label">Açıklama</label>
-                            <textarea asp-for="Description" class="form-control" rows="4"></textarea>
-                            <span asp-validation-for="Description" class="text-danger"></span>
+                            <label asp-for="Açıklama" class="form-label">Açıklama</label>
+                            <textarea asp-for="Açıklama" class="form-control" rows="4"></textarea>
+                            <span asp-validation-for="Açıklama" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="Category" class="form-label">Kategori</label>
-                            <input asp-for="Category" class="form-control" />
-                            <span asp-validation-for="Category" class="text-danger"></span>
+                            <label asp-for="Tür" class="form-label">Kategori</label>
+                            <input asp-for="Tür" class="form-control" />
+                            <span asp-validation-for="Tür" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="ReleaseDate" class="form-label">Yayın Tarihi</label>
-                            <input asp-for="ReleaseDate" class="form-control" type="date" />
-                            <span asp-validation-for="ReleaseDate" class="text-danger"></span>
+                            <label asp-for="VizyonTarihi" class="form-label">Yayın Tarihi</label>
+                            <input asp-for="VizyonTarihi" class="form-control" type="date" />
+                            <span asp-validation-for="VizyonTarihi" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="PosterUrl" class="form-label">Poster URL</label>
-                            <input asp-for="PosterUrl" class="form-control" />
-                            <span asp-validation-for="PosterUrl" class="text-danger"></span>
+                            <label asp-for="AfişUrl" class="form-label">Poster URL</label>
+                            <input asp-for="AfişUrl" class="form-control" />
+                            <span asp-validation-for="AfişUrl" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
-                            <label asp-for="TrailerUrl" class="form-label">Fragman URL</label>
-                            <input asp-for="TrailerUrl" class="form-control" />
-                            <span asp-validation-for="TrailerUrl" class="text-danger"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <div class="form-check">
-                                <input asp-for="IsSeries" class="form-check-input" type="checkbox" />
-                                <label asp-for="IsSeries" class="form-check-label">Bu bir dizidir</label>
-                            </div>
+                            <label asp-for="FragmanUrl" class="form-label">Fragman URL</label>
+                            <input asp-for="FragmanUrl" class="form-control" />
+                            <span asp-validation-for="FragmanUrl" class="text-danger"></span>
                         </div>
 
                         <div class="d-flex justify-content-between">

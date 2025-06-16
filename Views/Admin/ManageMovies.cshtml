@@ -28,18 +28,18 @@
                 {
                     <tr>
                         <td>
-                            <img src="@movie.PosterUrl" alt="@movie.Title" style="width: 50px; height: 75px; object-fit: cover;">
+                            <img src="@movie.AfişUrl" alt="@movie.Ad" style="width: 50px; height: 75px; object-fit: cover;">
                         </td>
-                        <td>@movie.Title</td>
-                        <td>@movie.Category</td>
-                        <td>@movie.ReleaseDate.Year</td>
+                        <td>@movie.Ad</td>
+                        <td>@movie.Tür</td>
+                        <td>@movie.Yil</td>
                         <td>
                             <div class="rating">
                                 @for (int i = 1; i <= 5; i++)
                                 {
-                                    <i class="bi bi-star@(i <= movie.Rating ? "-fill" : "")"></i>
+                                    <i class="bi bi-star@(i <= movie.Puan ? "-fill" : "")"></i>
                                 }
-                                <span class="ms-2">@movie.Rating.ToString("F1")</span>
+                                <span class="ms-2">@movie.Puan.ToString("F1")</span>
                             </div>
                         </td>
                         <td>
@@ -48,7 +48,7 @@
                                     <i class="bi bi-pencil"></i>
                                 </a>
                                 <button type="button" class="btn btn-danger btn-sm" 
-                                        onclick="confirmDelete(@movie.Id, '@movie.Title')">
+                                        onclick="confirmDelete(@movie.Id, '@movie.Ad')">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </div>
