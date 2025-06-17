@@ -29,6 +29,18 @@
                             E-posta adresiniz başarıyla doğrulandı. Giriş yapabilirsiniz.
                         </div>
                     }
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            @TempData["SuccessMessage"]
+                        </div>
+                    }
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            @TempData["ErrorMessage"]
+                        </div>
+                    }
 
                     <form asp-action="Login" method="post">
                         <div class="mb-3">
@@ -36,8 +48,8 @@
                             <input type="email" class="form-control" id="email" name="email" required />
                         </div>
                         <div class="mb-3">
-                            <label for="password" class="form-label">Şifre</label>
-                            <input type="password" class="form-control" id="password" name="password" required />
+                            <label for="sifre" class="form-label">Şifre</label>
+                            <input type="password" class="form-control" id="sifre" name="sifre" required />
                         </div>
                         <div class="mb-3">
                             <a asp-action="ForgotPassword" class="text-light">Şifremi Unuttum</a>

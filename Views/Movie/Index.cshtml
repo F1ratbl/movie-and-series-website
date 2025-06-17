@@ -1,3 +1,4 @@
+@model List<MovieModel>
 @{
     ViewData["Title"] = "Filmler";
 }
@@ -18,6 +19,9 @@
                                 <option value="Komedi">Komedi</option>
                                 <option value="Drama">Drama</option>
                                 <option value="Gerilim">Gerilim</option>
+                                <option value="Bilim Kurgu">Bilim Kurgu</option>
+                                <option value="Macera">Macera</option>
+                                <option value="Romantik">Romantik</option>
                             </select>
                         </div>
                         <div class="mb-3">
@@ -27,15 +31,29 @@
                                 <option value="2024">2024</option>
                                 <option value="2023">2023</option>
                                 <option value="2022">2022</option>
+                                <option value="2021">2021</option>
+                                <option value="2020">2020</option>
+                                <option value="2019">2019</option>
+                                <option value="2018">2018</option>
+                                <option value="2017">2017</option>
+                                <option value="2016">2016</option>
+                                <option value="2015">2015</option>
+                                <option value="2014">2014</option>
+                                <option value="2013">2013</option>
+                                <option value="2012">2012</option>
+                                <option value="2011">2011</option>
+                                <option value="2010">2010</option>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Puan</label>
                             <select name="minRating" class="form-select">
                                 <option value="">Herhangi Bir Puan</option>
-                                <option value="4">4+ Yıldız</option>
-                                <option value="3">3+ Yıldız</option>
-                                <option value="2">2+ Yıldız</option>
+                                <option value="9">9+ Puan</option>
+                                <option value="8">8+ Puan</option>
+                                <option value="7">7+ Puan</option>
+                                <option value="6">6+ Puan</option>
+                                <option value="5">5+ Puan</option>
                             </select>
                         </div>
                         <div class="mb-3">
@@ -44,6 +62,7 @@
                                 <option value="rating">Puana Göre</option>
                                 <option value="year">Yıla Göre</option>
                                 <option value="title">Başlığa Göre</option>
+                                <option value="date">Vizyon Tarihine Göre</option>
                             </select>
                         </div>
                         <button type="submit" class="btn btn-primary w-100">Filtreleri Uygula</button>
@@ -55,43 +74,69 @@
         <!-- Movie List -->
         <div class="col-md-9 bg-dark text-light rounded p-3">
             <div class="d-flex justify-content-between align-items-center mb-4">
-                <h2>Filmler</h2>
-                <div class="btn-group">
-                    <a href="#" class="btn btn-outline-light active">
+                <h2>FİLMLER VE DİZİLER</h2>
+                <div class="btn-group" id="viewToggleGroup">
+                    <a href="#" class="btn btn-outline-light active" id="gridViewBtn" onclick="setViewMode('grid'); return false;">
                         <i class="bi bi-grid"></i>
                     </a>
-                    <a href="#" class="btn btn-outline-light">
+                    <a href="#" class="btn btn-outline-light" id="listViewBtn" onclick="setViewMode('list'); return false;">
                         <i class="bi bi-list"></i>
                     </a>
                 </div>
             </div>
 
-            <div class="row">
-                @for (int i = 1; i <= 9; i++)
-                {
-                    <div class="col-md-4 mb-4">
-                        <div class="card h-100 bg-dark text-light">
-                            <img src="https://via.placeholder.com/300x450/2c3e50/ffffff?text=Film+@i" class="card-img-top" alt="Film @i">
-                            <div class="card-body">
-                                <h5 class="card-title">Örnek Film @i</h5>
-                                <div class="rating mb-2">
-                                    @for (int j = 1; j <= 5; j++)
-                                    {
-                                        <i class="bi bi-star@(j <= 4 ? "-fill" : "")"></i>
-                                    }
-                                    <span class="ms-2">8.@i</span>
+            @if (Model != null && Model.Any())
+            {
+                <div class="row" id="movieListContainer">
+                    @foreach (var movie in Model)
+                    {
+                        <div class="col-md-4 mb-4 movie-card-col">
+                            <div class="card h-100 bg-dark text-light movie-card">
+                                @if (!string.IsNullOrEmpty(movie.AfişUrl))
+                                {
+                                    <img src="@movie.AfişUrl" class="card-img-top" alt="@movie.Ad" style="height: 450px; object-fit: cover;">
+                                }
+                                else
+                                {
+                                    <img src="https://via.placeholder.com/300x450/2c3e50/ffffff?text=@movie.Ad" class="card-img-top" alt="@movie.Ad">
+                                }
+                                <div class="card-body">
+                                    <h5 class="card-title">@movie.Ad</h5>
+                                    <div class="rating mb-2">
+                                        @for (int j = 1; j <= 5; j++)
+                                        {
+                                            <i class="bi bi-star@(j <= movie.Puan ? "-fill" : "")" style="color: @(j <= movie.Puan ? "#ffd700" : "#6c757d");"></i>
+                                        }
+                                        <span class="ms-2">@movie.Puan.ToString("F1")</span>
+                                    </div>
+                                    <p class="card-text">@(movie.Açıklama.Length > 100 ? movie.Açıklama.Substring(0, 100) + "..." : movie.Açıklama)</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="badge bg-primary">@movie.Tür</span>
+                                        <small class="text-muted">@movie.Yil</small>
+                                    </div>
+                                    <div class="mt-2">
+                                        <small class="text-muted">
+                                            <i class="bi bi-clock"></i> @movie.Süre.ToString(@"hh\:mm")
+                                            <i class="bi bi-eye ms-2"></i> @movie.IzlenmeSayisi.ToString("N0")
+                                        </small>
+                                    </div>
+                                    <button type="button" class="btn btn-primary mt-3 w-100" onclick="showMovieDetails(@movie.Id, '@movie.Ad.Replace("'", "\\'")', '@movie.Açıklama.Replace("'", "\\'")', '@movie.Tür.Replace("'", "\\'")', @movie.Yil, @movie.Puan, '@movie.Yönetmen.Replace("'", "\\'")', '@movie.Oyuncular.Replace("'", "\\'")', '@movie.Ülke.Replace("'", "\\'")', '@movie.Dil.Replace("'", "\\'")', @movie.Bütçe, @movie.GiseHasilati, @movie.IzlenmeSayisi, '@movie.VizyonTarihi.ToString("dd.MM.yyyy")', '@movie.Süre.ToString(@"hh\:mm")', '@movie.FragmanUrl.Replace("'", "\\'")', '@movie.AfişUrl.Replace("'", "\\'")')">
+                                        Detayları Gör & Puanla
+                                    </button>
                                 </div>
-                                <p class="card-text">Bu bir örnek film açıklamasıdır. Film hakkında kısa bilgi verir.</p>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="badge bg-primary">Aksiyon</span>
-                                    <small class="text-muted">2024</small>
-                                </div>
-                                <a href="#" class="btn btn-primary mt-3 w-100">Detayları Gör</a>
                             </div>
                         </div>
-                    </div>
-                }
-            </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="text-center py-5">
+                    <i class="bi bi-film" style="font-size: 4rem; color: #6c757d;"></i>
+                    <h4 class="mt-3">Film bulunamadı</h4>
+                    <p class="text-muted">Seçtiğiniz kriterlere uygun film bulunmuyor.</p>
+                </div>
+            }
 
             <!-- Pagination -->
             <nav class="mt-4">
@@ -115,4 +160,313 @@
             </nav>
         </div>
     </div>
-</div> 
+</div>
+
+<!-- Film Detayları Modal -->
+<div class="modal fade" id="movieDetailsModal" tabindex="-1" aria-labelledby="movieDetailsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content bg-dark text-light">
+            <div class="modal-header">
+                <h5 class="modal-title" id="movieDetailsModalLabel">Film Detayları</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <img id="moviePoster" src="" class="img-fluid rounded shadow" alt="Film Posteri" style="width: 100%; height: auto;">
+                    </div>
+                    <div class="col-md-8">
+                        <h3 id="movieTitle" class="mb-3"></h3>
+                        <div class="rating mb-3">
+                            <div id="movieStars"></div>
+                            <span class="ms-2 fs-5" id="movieRating"></span>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <p class="text-muted mb-2">
+                                    <i class="bi bi-calendar"></i> <strong>Yıl:</strong> <span id="movieYear"></span>
+                                </p>
+                                <p class="text-muted mb-2">
+                                    <i class="bi bi-clock"></i> <strong>Süre:</strong> <span id="movieDuration"></span>
+                                </p>
+                                <p class="text-muted mb-2">
+                                    <i class="bi bi-film"></i> <strong>Tür:</strong> <span id="movieGenre"></span>
+                                </p>
+                                <p class="text-muted mb-2">
+                                    <i class="bi bi-globe"></i> <strong>Ülke:</strong> <span id="movieCountry"></span>
+                                </p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="text-muted mb-2">
+                                    <i class="bi bi-translate"></i> <strong>Dil:</strong> <span id="movieLanguage"></span>
+                                </p>
+                                <p class="text-muted mb-2">
+                                    <i class="bi bi-calendar-event"></i> <strong>Vizyon:</strong> <span id="movieReleaseDate"></span>
+                                </p>
+                                <p class="text-muted mb-2">
+                                    <i class="bi bi-eye"></i> <strong>İzlenme:</strong> <span id="movieViews"></span>
+                                </p>
+                                <p class="text-muted mb-2">
+                                    <i class="bi bi-currency-dollar"></i> <strong>Bütçe:</strong> $<span id="movieBudget"></span>
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h5>Açıklama</h5>
+                            <p class="lead" id="movieDescription"></p>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <h5>Yönetmen</h5>
+                                <p id="movieDirector"></p>
+                            </div>
+                            <div class="col-md-6">
+                                <h5>Oyuncular</h5>
+                                <p id="movieActors"></p>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <h5>Gişe Hasılatı</h5>
+                                <p class="text-success">$<span id="movieRevenue"></span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <a id="movieTrailer" href="" target="_blank" class="btn btn-danger" style="display: none;">
+                                    <i class="bi bi-play-circle"></i> Fragmanı İzle
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Puanlama Sistemi -->
+                        <div class="mb-4">
+                            <h5>Bu Filmi Puanla</h5>
+                            <div class="rating-input mb-3">
+                                <div class="star-rating">
+                                    <i class="bi bi-star" data-rating="1" onclick="rateMovie(1)"></i>
+                                    <i class="bi bi-star" data-rating="2" onclick="rateMovie(2)"></i>
+                                    <i class="bi bi-star" data-rating="3" onclick="rateMovie(3)"></i>
+                                    <i class="bi bi-star" data-rating="4" onclick="rateMovie(4)"></i>
+                                    <i class="bi bi-star" data-rating="5" onclick="rateMovie(5)"></i>
+                                </div>
+                                <span class="ms-2">Puanınızı seçin</span>
+                            </div>
+                            <button type="button" class="btn btn-success" onclick="submitRating()">
+                                <i class="bi bi-check-circle"></i> Puanı Gönder
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Kapat</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let currentMovieId = null;
+let selectedRating = 0;
+
+function showMovieDetails(id, title, description, genre, year, rating, director, actors, country, language, budget, revenue, views, releaseDate, duration, posterUrl, trailerUrl) {
+    currentMovieId = id;
+    
+    // Modal içeriğini doldur
+    document.getElementById('movieTitle').textContent = title;
+    document.getElementById('movieDescription').textContent = description;
+    document.getElementById('movieGenre').textContent = genre;
+    document.getElementById('movieYear').textContent = year;
+    document.getElementById('movieRating').textContent = rating.toFixed(1);
+    document.getElementById('movieDirector').textContent = director;
+    document.getElementById('movieActors').textContent = actors;
+    document.getElementById('movieCountry').textContent = country;
+    document.getElementById('movieLanguage').textContent = language;
+    document.getElementById('movieBudget').textContent = budget.toLocaleString();
+    document.getElementById('movieRevenue').textContent = revenue.toLocaleString();
+    document.getElementById('movieViews').textContent = views.toLocaleString();
+    document.getElementById('movieReleaseDate').textContent = releaseDate;
+    document.getElementById('movieDuration').textContent = duration;
+    
+    // Poster
+    const posterImg = document.getElementById('moviePoster');
+    if (posterUrl && posterUrl !== '') {
+        posterImg.src = posterUrl;
+    } else {
+        posterImg.src = `https://via.placeholder.com/400x600/2c3e50/ffffff?text=${encodeURIComponent(title)}`;
+    }
+    
+    // Fragman linki
+    const trailerLink = document.getElementById('movieTrailer');
+    if (trailerUrl && trailerUrl !== '') {
+        trailerLink.href = trailerUrl;
+        trailerLink.style.display = 'inline-block';
+    } else {
+        trailerLink.style.display = 'none';
+    }
+    
+    // Yıldızları göster
+    const starsContainer = document.getElementById('movieStars');
+    starsContainer.innerHTML = '';
+    for (let i = 1; i <= 5; i++) {
+        const star = document.createElement('i');
+        star.className = `bi bi-star${i <= rating ? '-fill' : ''}`;
+        star.style.color = i <= rating ? '#ffd700' : '#6c757d';
+        star.style.fontSize = '1.5rem';
+        star.style.marginRight = '2px';
+        starsContainer.appendChild(star);
+    }
+    
+    // Modal'ı göster
+    const modal = new bootstrap.Modal(document.getElementById('movieDetailsModal'));
+    modal.show();
+}
+
+function rateMovie(rating) {
+    selectedRating = rating;
+    
+    // Yıldızları güncelle
+    const stars = document.querySelectorAll('.star-rating i');
+    stars.forEach((star, index) => {
+        const starRating = index + 1;
+        star.className = `bi bi-star${starRating <= rating ? '-fill' : ''}`;
+        star.style.color = starRating <= rating ? '#ffd700' : '#6c757d';
+    });
+}
+
+function submitRating() {
+    if (selectedRating === 0) {
+        alert('Lütfen bir puan seçin!');
+        return;
+    }
+    
+    // API'ye puan gönder
+    fetch(`/api/movies/${currentMovieId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            id: currentMovieId,
+            ad: document.getElementById('movieTitle').textContent,
+            açıklama: document.getElementById('movieDescription').textContent,
+            tür: document.getElementById('movieGenre').textContent,
+            yil: parseInt(document.getElementById('movieYear').textContent),
+            puan: selectedRating, // Yeni puan
+            yönetmen: document.getElementById('movieDirector').textContent,
+            oyuncular: document.getElementById('movieActors').textContent,
+            ülke: document.getElementById('movieCountry').textContent,
+            dil: document.getElementById('movieLanguage').textContent,
+            bütçe: parseFloat(document.getElementById('movieBudget').textContent.replace(/,/g, '')),
+            giseHasilati: parseFloat(document.getElementById('movieRevenue').textContent.replace(/,/g, '')),
+            izlenmeSayisi: parseInt(document.getElementById('movieViews').textContent.replace(/,/g, '')) + 1, // İzlenme sayısını artır
+            vizyonTarihi: new Date(document.getElementById('movieReleaseDate').textContent.split('.').reverse().join('-')),
+            süre: document.getElementById('movieDuration').textContent,
+            afişUrl: document.getElementById('moviePoster').src,
+            fragmanUrl: document.getElementById('movieTrailer').href || ''
+        })
+    })
+    .then(response => {
+        if (response.ok) {
+            // Başarılı puanlama mesajı
+            alert(`"${document.getElementById('movieTitle').textContent}" filmine ${selectedRating} puan verdiniz! Puan başarıyla kaydedildi.`);
+            
+            // Modal'ı kapat
+            const modal = bootstrap.Modal.getInstance(document.getElementById('movieDetailsModal'));
+            modal.hide();
+            
+            // Sayfayı yenile (güncel puanları görmek için)
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
+        } else {
+            alert('Puan kaydedilirken bir hata oluştu. Lütfen tekrar deneyin.');
+        }
+    })
+    .catch(error => {
+        console.error('Puanlama hatası:', error);
+        alert('Puan kaydedilirken bir hata oluştu. Lütfen tekrar deneyin.');
+    });
+    
+    // Puanlama sıfırla
+    selectedRating = 0;
+}
+
+function setViewMode(mode) {
+    const gridBtn = document.getElementById('gridViewBtn');
+    const listBtn = document.getElementById('listViewBtn');
+    const container = document.getElementById('movieListContainer');
+    if (mode === 'grid') {
+        gridBtn.classList.add('active');
+        listBtn.classList.remove('active');
+        // Grid görünümü: 3 sütun
+        container.classList.remove('list-view');
+        const cards = container.querySelectorAll('.movie-card-col');
+        cards.forEach(card => {
+            card.classList.remove('col-12');
+            card.classList.add('col-md-4', 'mb-4');
+        });
+    } else {
+        listBtn.classList.add('active');
+        gridBtn.classList.remove('active');
+        // Liste görünümü: 1 sütun
+        container.classList.add('list-view');
+        const cards = container.querySelectorAll('.movie-card-col');
+        cards.forEach(card => {
+            card.classList.remove('col-md-4');
+            card.classList.add('col-12', 'mb-4');
+        });
+    }
+}
+</script>
+
+<style>
+.rating-input .star-rating {
+    display: inline-flex;
+    align-items: center;
+}
+
+.rating-input .star-rating i {
+    font-size: 1.5rem;
+    margin-right: 2px;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.rating-input .star-rating i:hover {
+    color: #ffd700 !important;
+}
+
+.modal-content {
+    border: none;
+    border-radius: 15px;
+}
+
+.modal-header {
+    border-bottom: 1px solid #444;
+}
+
+.modal-footer {
+    border-top: 1px solid #444;
+}
+
+.list-view .movie-card {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    min-height: 200px;
+}
+.list-view .movie-card .card-img-top {
+    width: 150px;
+    height: 200px;
+    object-fit: cover;
+    margin-right: 20px;
+}
+.list-view .movie-card .card-body {
+    flex: 1;
+    padding: 1rem;
+}
+</style> 

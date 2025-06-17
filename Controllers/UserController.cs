@@ -20,7 +20,7 @@ namespace FilmDiziSitesi.Controllers
         // GET: api/users
         [HttpGet]
         public IActionResult Get()
-        {
+        {       
             var users = _context.Users.ToList();
             return Ok(users);
         }
@@ -35,7 +35,7 @@ namespace FilmDiziSitesi.Controllers
 
             return Ok(user);
         }
-
+        
         // POST: api/users
         [HttpPost]
         public IActionResult Post([FromBody] UserModel user)

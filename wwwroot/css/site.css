@@ -75,3 +75,111 @@ body {
   background: #4ecdc4 !important;
   color: #181a1b !important;
 }
+
+/* Dark theme text overrides */
+.text-muted {
+  color: #b8b8b8 !important;
+}
+
+.text-secondary {
+  color: #b8b8b8 !important;
+}
+
+.footer {
+  color: #b8b8b8 !important;
+}
+
+.footer a {
+  color: #e0e0e0 !important;
+}
+
+.footer a:hover {
+  color: #fff !important;
+}
+
+/* Modal text overrides */
+.modal-content {
+  background: #23272b !important;
+  color: #e0e0e0 !important;
+  border-color: #444 !important;
+}
+
+.modal-header {
+  border-bottom-color: #444 !important;
+}
+
+.modal-footer {
+  border-top-color: #444 !important;
+}
+
+.modal-title {
+  color: #e0e0e0 !important;
+}
+
+/* Form labels and text */
+label {
+  color: #e0e0e0 !important;
+}
+
+.form-label {
+  color: #e0e0e0 !important;
+}
+
+/* Small text elements */
+small {
+  color: #b8b8b8 !important;
+}
+
+/* Any remaining dark text */
+* {
+  color: inherit;
+}
+
+/* Ek kategori kartlarının gridde düzgün görünmesi için */
+/* .category-card {
+  display: block;
+  width: 100%;
+} */
+
+/* Bootstrap grid yapısını bozacak bir şey olmasın */
+/*
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -12px;
+  margin-left: -12px;
+}
+.col-md-2, .col-6 {
+  position: relative;
+  width: 100%;
+  padding-right: 12px;
+  padding-left: 12px;
+}
+@media (min-width: 768px) {
+  .col-md-2 {
+    flex: 0 0 auto;
+    width: 16.66666667%;
+  }
+}
+@media (max-width: 767.98px) {
+  .col-6 {
+    flex: 0 0 auto;
+    width: 50%;
+  }
+}
+*/
+
+.category-flex {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    justify-content: flex-start;
+    padding-bottom: 24px;
+    overflow-x: auto;
+}
+
+.category-box {
+    width: 220px;
+    margin-bottom: 24px;
+    flex: 0 0 220px;
+}

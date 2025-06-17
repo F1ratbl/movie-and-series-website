@@ -106,4 +106,110 @@ namespace FilmDiziSitesi.Controllers
             return NoContent();
         }
     }
+
+    // MVC Controller: ViewResult döndüren, /Movie/Index gibi istekleri karşılayan controller
+    [Route("Movie")]
+    public class MovieController : Controller
+    {
+        private readonly ApplicationDbContext _context;
+        // Tüm kategoriler merkezi olarak burada tanımlanıyor
+        public static readonly List<string> TumKategoriler = new List<string>
+        {
+            "Filmler", "Diziler", "Aksiyon", "Komedi", "Romantik", "Gerilim", "Dram", "Korku", "Belgesel", "Animasyon", "Polisiye", "Macera", "Fantastik"
+        };
+        public MovieController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        // GET: /Movie/Index
+        public IActionResult Index(string category, int? year, double? minRating, string sortBy)
+        {
+            var movies = _context.Movies.AsQueryable();
+
+            // Filtreler
+            if (!string.IsNullOrEmpty(category))
+                movies = movies.Where(m => m.Tür == category);
+            if (year.HasValue)
+                movies = movies.Where(m => m.Yil == year.Value);
+            if (minRating.HasValue)
+                movies = movies.Where(m => m.Puan >= minRating.Value);
+
+            // Sıralama
+            switch (sortBy)
+            {
+                case "year":
+                    movies = movies.OrderByDescending(m => m.Yil);
+                    break;
+                case "title":
+                    movies = movies.OrderBy(m => m.Ad);
+                    break;
+                case "date":
+                    movies = movies.OrderByDescending(m => m.VizyonTarihi);
+                    break;
+                default:
+                    movies = movies.OrderByDescending(m => m.Puan);
+                    break;
+            }
+
+            return View(movies.ToList());
+        }
+
+        // GET: /Movie/Category
+        [HttpGet("Category")]
+        [HttpGet("Category/{category}")]
+        public IActionResult Category(string category)
+        {
+            if (string.IsNullOrEmpty(category))
+            {
+                return View(_context.Movies.ToList());
+            }
+
+            var normalizedCategory = category.Replace("%20", " ").Replace("-", " ").ToLower();
+
+            // "Filmler" ve "Diziler" özel kategorileri
+            if (string.Equals(category, "Filmler", StringComparison.OrdinalIgnoreCase))
+            {
+                return View(_context.Movies.Where(m => !m.Tür.ToLower().Contains("dizi")).ToList());
+            }
+            if (string.Equals(category, "Diziler", StringComparison.OrdinalIgnoreCase))
+            {
+                return View(_context.Movies.Where(m => m.Tür.ToLower().Contains("dizi")).ToList());
+            }
+
+            // Diğer kategoriler için, birden fazla kategori varsa virgül veya tire ile ayırıp eşleşme yap
+            var allMovies = _context.Movies.ToList();
+            var movies = allMovies.Where(m => m.Tür != null && m.Tür.ToLower().Split(',', '-', '/').Select(t => t.Trim()).Any(t => t == normalizedCategory)).ToList();
+            return View(movies);
+        }
+
+        [HttpGet("Search")]
+        public IActionResult Search(string query)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                ViewBag.SearchQuery = "";
+                return View(new List<MovieModel>());
+            }
+
+            var results = _context.Movies
+                .Where(m =>
+                    m.Ad.ToLower().Contains(query.ToLower()) ||
+                    m.Tür.ToLower().Contains(query.ToLower()) ||
+                    m.Oyuncular.ToLower().Contains(query.ToLower()))
+                .ToList();
+
+            ViewBag.SearchQuery = query;
+            return View(results);
+        }
+
+        // Ana sayfa kategorileri için action
+        [HttpGet("Categories")]
+        public IActionResult Categories()
+        {
+            ViewBag.AllCategories = TumKategoriler;
+            // Sadece ilk 6 kategori ana sayfada gösterilecek
+            return View(TumKategoriler.Take(6).ToList());
+        }
+    }
 }

@@ -6,33 +6,92 @@
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-4">
-            <img src="@Model.AfişUrl" class="img-fluid rounded" alt="@Model.Ad">
+            @if (!string.IsNullOrEmpty(Model.AfişUrl))
+            {
+                <img src="@Model.AfişUrl" class="img-fluid rounded shadow" alt="@Model.Ad" style="width: 100%; height: auto;">
+            }
+            else
+            {
+                <img src="https://via.placeholder.com/400x600/2c3e50/ffffff?text=@Model.Ad" class="img-fluid rounded shadow" alt="@Model.Ad">
+            }
         </div>
         <div class="col-md-8">
-            <h1>@Model.Ad</h1>
+            <h1 class="mb-3">@Model.Ad</h1>
             <div class="rating mb-3">
                 @for (int i = 1; i <= 5; i++)
                 {
-                    <i class="bi bi-star@(i <= Model.Puan ? "-fill" : "")"></i>
+                    <i class="bi bi-star@(i <= Model.Puan ? "-fill" : "")" style="color: @(i <= Model.Puan ? "#ffd700" : "#6c757d"); font-size: 1.5rem;"></i>
                 }
-                <span class="ms-2">@Model.Puan.ToString("F1")</span>
+                <span class="ms-2 fs-5">@Model.Puan.ToString("F1")</span>
             </div>
-            <p class="text-muted">
-                <i class="bi bi-calendar"></i> @Model.Yil
-                <i class="bi bi-clock ms-3"></i> @Model.Süre.ToString(@"hh\:mm") dakika
-                <i class="bi bi-film ms-3"></i> @Model.Tür
-            </p>
-            <p>@Model.Açıklama</p>
-            <div class="mb-3">
-                <strong>Yönetmen:</strong> @Model.Yönetmen
+            
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <p class="text-muted mb-2">
+                        <i class="bi bi-calendar"></i> <strong>Yıl:</strong> @Model.Yil
+                    </p>
+                    <p class="text-muted mb-2">
+                        <i class="bi bi-clock"></i> <strong>Süre:</strong> @Model.Süre.ToString(@"hh\:mm") dakika
+                    </p>
+                    <p class="text-muted mb-2">
+                        <i class="bi bi-film"></i> <strong>Tür:</strong> @Model.Tür
+                    </p>
+                    <p class="text-muted mb-2">
+                        <i class="bi bi-globe"></i> <strong>Ülke:</strong> @Model.Ülke
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <p class="text-muted mb-2">
+                        <i class="bi bi-translate"></i> <strong>Dil:</strong> @Model.Dil
+                    </p>
+                    <p class="text-muted mb-2">
+                        <i class="bi bi-calendar-event"></i> <strong>Vizyon:</strong> @Model.VizyonTarihi.ToString("dd.MM.yyyy")
+                    </p>
+                    <p class="text-muted mb-2">
+                        <i class="bi bi-eye"></i> <strong>İzlenme:</strong> @Model.IzlenmeSayisi.ToString("N0")
+                    </p>
+                    <p class="text-muted mb-2">
+                        <i class="bi bi-currency-dollar"></i> <strong>Bütçe:</strong> $@Model.Bütçe.ToString("N0")
+                    </p>
+                </div>
             </div>
-            <div class="mb-3">
-                <strong>Oyuncular:</strong> @Model.Oyuncular
+            
+            <div class="mb-4">
+                <h5>Açıklama</h5>
+                <p class="lead">@Model.Açıklama</p>
             </div>
-            <div class="mb-3">
-                <strong>Dil:</strong> @Model.Dil
+            
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h5>Yönetmen</h5>
+                    <p>@Model.Yönetmen</p>
+                </div>
+                <div class="col-md-6">
+                    <h5>Oyuncular</h5>
+                    <p>@Model.Oyuncular</p>
+                </div>
             </div>
-            <!-- İzleme, oynat, fragman bölümleri kaldırıldı. Yorum ve puanlama formu öne çıkarıldı. -->
+            
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h5>Gişe Hasılatı</h5>
+                    <p class="text-success">$@Model.GiseHasilati.ToString("N0")</p>
+                </div>
+                <div class="col-md-6">
+                    @if (!string.IsNullOrEmpty(Model.FragmanUrl))
+                    {
+                        <a href="@Model.FragmanUrl" target="_blank" class="btn btn-danger">
+                            <i class="bi bi-play-circle"></i> Fragmanı İzle
+                        </a>
+                    }
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <a href="@Url.Action("Index", "Movie")" class="btn btn-secondary">
+                    <i class="bi bi-arrow-left"></i> Film Listesine Dön
+                </a>
+            </div>
         </div>
     </div>
 </div>
@@ -40,26 +99,14 @@
 <style>
     .rating {
         display: flex;
-        flex-direction: row-reverse;
-        justify-content: flex-end;
+        align-items: center;
     }
     
-    .rating input {
-        display: none;
+    .rating i {
+        margin-right: 2px;
     }
     
-    .rating label {
-        font-size: 30px;
-        color: #ddd;
-        cursor: pointer;
-    }
-    
-    .rating input:checked ~ label {
-        color: #ffd700;
-    }
-    
-    .rating label:hover,
-    .rating label:hover ~ label {
-        color: #ffd700;
+    .shadow {
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
     }
 </style>
