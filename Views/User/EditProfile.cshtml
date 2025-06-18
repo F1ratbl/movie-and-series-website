@@ -3,32 +3,160 @@
     ViewData["Title"] = "Profili Düzenle";
 }
 
-<div class="container mt-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card bg-dark text-light">
-                <div class="card-header">
-                    <h3 class="mb-0">Profili Düzenle</h3>
-                </div>
-                <div class="card-body">
+<style>
+    .edit-profile-container {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        padding: 50px 0;
+    }
+
+    .edit-profile-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        color: white;
+    }
+
+    .edit-profile-title {
+        color: white;
+        font-size: 2rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 30px;
+        background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .form-floating {
+        margin-bottom: 20px;
+    }
+
+    .form-control {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        height: 50px;
+    }
+
+    .form-control:focus {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.3);
+        color: white;
+        box-shadow: none;
+    }
+
+    .form-floating label {
+        color: #b8b8b8;
+    }
+
+    .form-floating > .form-control:focus ~ label,
+    .form-floating > .form-control:not(:placeholder-shown) ~ label {
+        color: #4ecdc4;
+    }
+
+    .btn-save {
+        background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+        border: none;
+        color: white;
+        padding: 12px 30px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-save:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        color: white;
+    }
+
+    .btn-cancel {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #b8b8b8;
+        padding: 12px 30px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-cancel:hover {
+        background: rgba(255, 255, 255, 0.2);
+        color: white;
+        text-decoration: none;
+    }
+
+    .validation-error {
+        color: #ff6b6b;
+        font-size: 0.9rem;
+        margin-top: 5px;
+    }
+
+    .info-box {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 30px;
+        color: #b8b8b8;
+    }
+
+    .info-box i {
+        color: #4ecdc4;
+        margin-right: 10px;
+    }
+</style>
+
+<div class="edit-profile-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="edit-profile-card">
+                    <h1 class="edit-profile-title">Profili Düzenle</h1>
+                    
+                    <div class="info-box">
+                        <i class="bi bi-info-circle"></i>
+                        Profil bilgilerinizi güncelleyebilirsiniz. Şifre değişikliği için ayrı bir sayfa kullanılacaktır.
+                    </div>
+
                     <form asp-action="EditProfile" method="post">
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div asp-validation-summary="ModelOnly" class="validation-error"></div>
 
-                        <div class="mb-3">
-                            <label asp-for="KullaniciAdi" class="form-label">Kullanıcı Adı</label>
-                            <input asp-for="KullaniciAdi" class="form-control" />
-                            <span asp-validation-for="KullaniciAdi" class="text-danger"></span>
+                        <input type="hidden" asp-for="Id" />
+                        <input type="hidden" asp-for="Sifre" />
+                        <input type="hidden" asp-for="KayitTarihi" />
+                        <input type="hidden" asp-for="Role" />
+
+                        <div class="form-floating">
+                            <input asp-for="KullaniciAdi" class="form-control" placeholder="Kullanıcı Adı" required>
+                            <label asp-for="KullaniciAdi">Kullanıcı Adı</label>
+                            <span asp-validation-for="KullaniciAdi" class="validation-error"></span>
                         </div>
 
-                        <div class="mb-3">
-                            <label asp-for="Email" class="form-label">E-posta</label>
-                            <input asp-for="Email" class="form-control" type="email" />
-                            <span asp-validation-for="Email" class="text-danger"></span>
+                        <div class="form-floating">
+                            <input asp-for="Email" class="form-control" type="email" placeholder="name@example.com" required>
+                            <label asp-for="Email">E-posta Adresi</label>
+                            <span asp-validation-for="Email" class="validation-error"></span>
                         </div>
 
-                        <div class="d-flex justify-content-between">
-                            <a asp-action="Profile" class="btn btn-secondary">İptal</a>
-                            <button type="submit" class="btn btn-primary">Kaydet</button>
+                        <div class="d-flex justify-content-between mt-4">
+                            <a asp-action="Profile" class="btn btn-cancel">
+                                <i class="bi bi-arrow-left me-2"></i>
+                                İptal
+                            </a>
+                            <button type="submit" class="btn btn-save">
+                                <i class="bi bi-check-circle me-2"></i>
+                                Kaydet
+                            </button>
                         </div>
                     </form>
                 </div>

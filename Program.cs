@@ -26,8 +26,8 @@ builder.Services.AddSession(options =>
 builder.Services.AddAuthentication("MyCookieAuth")
     .AddCookie("MyCookieAuth", options =>
     {
-        options.LoginPath = "/Account/Login";         // Giriş yapılmamışsa yönlendirilecek sayfa
-        options.AccessDeniedPath = "/Account/AccessDenied";  // Yetkisiz erişim sayfası
+        options.LoginPath = "/User/Login";         // Giriş yapılmamışsa yönlendirilecek sayfa
+        options.AccessDeniedPath = "/User/AccessDenied";  // Yetkisiz erişim sayfası
     });
 
 // 🔐 Authorization servisi ekleniyor (roller ve politikalar için)
