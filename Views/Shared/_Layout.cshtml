@@ -18,25 +18,32 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNav">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Movie" asp-action="Index">Movies</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Movie" asp-action="Series">Series</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Movie" asp-action="Category">Categories</a>
-                        </li>
+                        <!-- Home linkini kaldırdım -->
                     </ul>
-                    <form class="d-flex me-2">
+                    <!-- <form class="d-flex me-2">
                         <input class="form-control me-2" type="search" placeholder="Search movies & series" aria-label="Search">
                         <button class="btn btn-outline-light" type="submit">Search</button>
-                    </form>
-                    <a class="btn btn-outline-light me-2" asp-controller="User" asp-action="Login">Login</a>
-                    <a class="btn btn-outline-light me-2" asp-controller="User" asp-action="Register">Register</a>
+                    </form> -->
+                    
+                    @if (Context.Session.GetString("UserId") != null)
+                    {
+                        <div class="dropdown me-2">
+                            <button class="btn btn-outline-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-person-circle"></i> @Context.Session.GetString("UserName")
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="userDropdown">
+                                <li><a class="dropdown-item" asp-controller="User" asp-action="Profile">Profil</a></li>
+                                <li><a class="dropdown-item" asp-controller="User" asp-action="EditProfile">Profili Düzenle</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" asp-controller="User" asp-action="Logout">Çıkış Yap</a></li>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <a class="btn btn-outline-light me-2" asp-controller="User" asp-action="Login">Login</a>
+                        <a class="btn btn-outline-light me-2" asp-controller="User" asp-action="Register">Register</a>
+                    }
                 </div>
             </div>
         </nav>

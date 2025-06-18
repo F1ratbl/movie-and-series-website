@@ -4,10 +4,10 @@
 }
 <div class="container py-5">
     <h2 class="mb-4">Kategoriler</h2>
-    <div class="row">
+    <div class="category-flex" id="mainCategories">
         @foreach (var category in Model)
         {
-            <div class="col-md-3 mb-3">
+            <div class="category-box">
                 <div class="card h-100 bg-dark text-light text-center">
                     <div class="card-body d-flex flex-column justify-content-center align-items-center">
                         <h5 class="card-title">@category</h5>
@@ -17,4 +17,27 @@
             </div>
         }
     </div>
-</div> 
+    <button id="showMoreBtn" class="btn btn-outline-primary mt-3" onclick="showMoreCategories()">Daha Fazla</button>
+    <div class="category-flex mt-3" id="moreCategories" style="display:none;">
+        @if (ViewBag.AllCategories != null)
+        {
+            foreach (var category in ((List<string>)ViewBag.AllCategories).Skip(6))
+            {
+                <div class="category-box">
+                    <div class="card h-100 bg-dark text-light text-center">
+                        <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                            <h5 class="card-title">@category</h5>
+                            <a asp-action="Category" asp-route-category="@category" class="btn btn-primary mt-2">Filmleri Gör</a>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+</div>
+<script>
+function showMoreCategories() {
+    document.getElementById('moreCategories').style.display = 'flex';
+    document.getElementById('showMoreBtn').style.display = 'none';
+}
+</script> 
