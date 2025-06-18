@@ -184,9 +184,9 @@ namespace FilmDiziSitesi.Controllers
         }
 
         [HttpGet("Search")]
-        public IActionResult Search(string query)
+        public IActionResult Search(string searchTerm)
         {
-            if (string.IsNullOrWhiteSpace(query))
+            if (string.IsNullOrWhiteSpace(searchTerm))
             {
                 ViewBag.SearchQuery = "";
                 return View(new List<MovieModel>());
@@ -194,12 +194,12 @@ namespace FilmDiziSitesi.Controllers
 
             var results = _context.Movies
                 .Where(m =>
-                    m.Ad.ToLower().Contains(query.ToLower()) ||
-                    m.Tür.ToLower().Contains(query.ToLower()) ||
-                    m.Oyuncular.ToLower().Contains(query.ToLower()))
+                    m.Ad.ToLower().Contains(searchTerm.ToLower()) ||
+                    m.Tür.ToLower().Contains(searchTerm.ToLower()) ||
+                    m.Oyuncular.ToLower().Contains(searchTerm.ToLower()))
                 .ToList();
 
-            ViewBag.SearchQuery = query;
+            ViewBag.SearchQuery = searchTerm;
             return View(results);
         }
 

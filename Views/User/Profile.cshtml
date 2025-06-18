@@ -1,39 +1,196 @@
 @using FilmDiziSitesi.Models
 @model FilmDiziSitesi.Models.UserModel
 @{
-    ViewData["Title"] = "Profile";
+    ViewData["Title"] = "Profil";
 }
-<link rel="stylesheet" href="/css/profile-custom.css" />
-<div class="container py-5">
-    <div class="row justify-content-center">
-        <div class="col-lg-4 col-md-6 mb-4">
-            <div class="profile-card">
-                <img src="/images/default-avatar.png" class="profile-avatar" alt="@Model.KullaniciAdi">
-                <div class="profile-info">
-                    <h3>@Model.KullaniciAdi</h3>
-                    <p>@Model.Email</p>
-                </div>
-                <div class="profile-stats">
-                    <div class="profile-stat">
-                        <div class="stat-label">Kayıt Tarihi</div>
-                        <div class="stat-value">@Model.KayitTarihi.ToString("dd.MM.yyyy")</div>
-                    </div>
-                    <div class="profile-stat">
-                        <div class="stat-label">Rol</div>
-                        <div class="stat-value">@Model.Role</div>
-                    </div>
-                </div>
-                <a asp-action="EditProfile" class="btn btn-danger w-100 mt-2">Profili Düzenle</a>
+
+<style>
+    .profile-container {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        padding: 50px 0;
+    }
+
+    .profile-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        text-align: center;
+        color: white;
+    }
+
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid rgba(255, 255, 255, 0.2);
+        margin-bottom: 20px;
+        background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+    }
+
+    .profile-info h3 {
+        color: white;
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 10px;
+        background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .profile-info p {
+        color: #b8b8b8;
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+    }
+
+    .profile-stats {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .profile-stat {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        padding: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .stat-label {
+        color: #b8b8b8;
+        font-size: 0.9rem;
+        margin-bottom: 5px;
+    }
+
+    .stat-value {
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 600;
+    }
+
+    .btn-edit-profile {
+        background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+        border: none;
+        color: white;
+        padding: 12px 30px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 10px;
+        width: 100%;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        display: inline-block;
+    }
+
+    .btn-edit-profile:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        color: white;
+    }
+
+    .profile-section {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 30px;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        margin-bottom: 30px;
+    }
+
+    .profile-section h5 {
+        color: white;
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+    }
+
+    .profile-section h5 i {
+        color: #4ecdc4;
+        margin-right: 10px;
+    }
+
+    .empty-state {
+        text-align: center;
+        color: #b8b8b8;
+        padding: 40px 20px;
+    }
+
+    .empty-state i {
+        font-size: 3rem;
+        color: #4ecdc4;
+        margin-bottom: 20px;
+        opacity: 0.5;
+    }
+
+    .success-message {
+        background: rgba(76, 175, 80, 0.2);
+        border: 1px solid rgba(76, 175, 80, 0.3);
+        color: #4caf50;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+</style>
+
+<div class="profile-container">
+    <div class="container">
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="success-message">
+                <i class="bi bi-check-circle me-2"></i>
+                @TempData["SuccessMessage"]
             </div>
-        </div>
-        <div class="col-lg-8 col-md-12">
-            <div class="profile-section mb-4">
-                <h5><i class="bi bi-chat-left-text me-2"></i>Son Yorumlar</h5>
-                <div class="text-muted">Henüz yorum yapmadınız.</div>
+        }
+
+        <div class="row justify-content-center">
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="profile-card">
+                    <img src="/images/default-avatar.png" class="profile-avatar" alt="@Model.KullaniciAdi" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiByeD0iNjAiIGZpbGw9InVybCgjZ3JhZGllbnQpIi8+CjxwYXRoIGQ9Ik02MCA2NUM2NS41MjI4IDY1IDcwIDY5LjQ3NzIgNzAgNzVDNzAgODAuNTIyOCA2NS41MjI4IDg1IDYwIDg1QzU0LjQ3NzIgODUgNTAgODAuNTIyOCA1MCA3NUM1MCA2OS40NzcyIDU0LjQ3NzIgNjUgNjAgNjVaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNNzAgOTVDNzAgOTUuNTUyMyA2OS41NTIzIDk2IDY5IDk2SDUxQzUwLjQ0NzcgOTYgNTAgOTUuNTUyMyA1MCA5NVY4NUM1MCA4NC40NDc3IDUwLjQ0NzcgODQgNTEgODRINjlDNjkuNTUyMyA4NCA3MCA4NC40NDc3IDcwIDg1Vjk1WiIgZmlsbD0id2hpdGUiLz4KPGRlZnM+CjxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZGllbnQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgo8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZmY2YjZiO3N0b3Atb3BhY2l0eToxIiAvPgo8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiM0ZWNkYzQ7c3RvcC1vcGFjaXR5OjEiIC8+CjwvbGluZWFyR3JhZGllbnQ+CjwvZGVmcz4KPC9zdmc+'">
+                    <div class="profile-info">
+                        <h3>@Model.KullaniciAdi</h3>
+                        <p>@Model.Email</p>
+                    </div>
+                    <div class="profile-stats">
+                        <div class="profile-stat">
+                            <div class="stat-label">Kayıt Tarihi</div>
+                            <div class="stat-value">@Model.KayitTarihi.ToString("dd.MM.yyyy")</div>
+                        </div>
+                        <div class="profile-stat">
+                            <div class="stat-label">Rol</div>
+                            <div class="stat-value">@Model.Role</div>
+                        </div>
+                    </div>
+                    <a asp-action="EditProfile" class="btn btn-edit-profile">
+                        <i class="bi bi-pencil-square me-2"></i>
+                        Profili Düzenle
+                    </a>
+                </div>
             </div>
-            <div class="profile-section">
-                <h5><i class="bi bi-star me-2"></i>Son Puanlamalar</h5>
-                <div class="text-muted">Henüz puanlama yapmadınız.</div>
+            <div class="col-lg-8 col-md-12">
+                <div class="profile-section">
+                    <h5><i class="bi bi-chat-left-text"></i>Son Yorumlar</h5>
+                    <div class="empty-state">
+                        <i class="bi bi-chat-left-text"></i>
+                        <p>Henüz yorum yapmadınız.</p>
+                    </div>
+                </div>
+                <div class="profile-section">
+                    <h5><i class="bi bi-star"></i>Son Puanlamalar</h5>
+                    <div class="empty-state">
+                        <i class="bi bi-star"></i>
+                        <p>Henüz puanlama yapmadınız.</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

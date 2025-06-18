@@ -1,0 +1,196 @@
+@model FilmDiziSitesi.Models.UserModel
+
+@{
+    ViewData["Title"] = "Admin Hesabı Oluştur";
+}
+
+<style>
+    .admin-create-container {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 50px 0;
+    }
+
+    .admin-create-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        max-width: 500px;
+        margin: 0 auto;
+    }
+
+    .admin-create-title {
+        color: white;
+        font-size: 2rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 30px;
+        background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .admin-create-subtitle {
+        color: #b8b8b8;
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 1.1rem;
+    }
+
+    .form-floating {
+        margin-bottom: 20px;
+    }
+
+    .form-control {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: white;
+        height: 50px;
+    }
+
+    .form-control:focus {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.3);
+        color: white;
+        box-shadow: none;
+    }
+
+    .form-floating label {
+        color: #b8b8b8;
+    }
+
+    .form-floating > .form-control:focus ~ label,
+    .form-floating > .form-control:not(:placeholder-shown) ~ label {
+        color: #4ecdc4;
+    }
+
+    .btn-admin-create {
+        background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+        border: none;
+        color: white;
+        padding: 12px 0;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 10px;
+        width: 100%;
+        margin-bottom: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-admin-create:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+    }
+
+    .admin-links {
+        text-align: center;
+    }
+
+    .admin-links a {
+        color: #4ecdc4;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+
+    .admin-links a:hover {
+        color: #ff6b6b;
+    }
+
+    .admin-icon {
+        font-size: 4rem;
+        color: #4ecdc4;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .security-notice {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 30px;
+        color: #b8b8b8;
+    }
+
+    .security-notice i {
+        color: #ff6b6b;
+        margin-right: 10px;
+    }
+</style>
+
+<div class="admin-create-container">
+    <div class="container">
+        <div class="admin-create-card">
+            <div class="admin-icon">
+                <i class="bi bi-shield-lock"></i>
+            </div>
+            
+            <h1 class="admin-create-title">Admin Hesabı Oluştur</h1>
+            <p class="admin-create-subtitle">Yeni admin hesabı oluşturun</p>
+
+            <div class="security-notice">
+                <i class="bi bi-exclamation-triangle"></i>
+                Bu işlem yeni bir admin hesabı oluşturacaktır. Güvenli bir şifre kullanın.
+            </div>
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            <form asp-action="CreateAdmin" method="post">
+                <div class="form-floating">
+                    <input asp-for="KullaniciAdi" class="form-control" placeholder="Admin kullanıcı adı" required>
+                    <label asp-for="KullaniciAdi">Kullanıcı Adı</label>
+                    <span asp-validation-for="KullaniciAdi" class="text-warning"></span>
+                </div>
+
+                <div class="form-floating">
+                    <input asp-for="Email" type="email" class="form-control" placeholder="admin@example.com" required>
+                    <label asp-for="Email">E-posta</label>
+                    <span asp-validation-for="Email" class="text-warning"></span>
+                </div>
+
+                <div class="form-floating">
+                    <input asp-for="Sifre" type="password" class="form-control" placeholder="En az 8 karakter" required>
+                    <label asp-for="Sifre">Şifre</label>
+                    <span asp-validation-for="Sifre" class="text-warning"></span>
+                </div>
+
+                <div class="form-floating">
+                    <input name="SifreTekrar" type="password" class="form-control" placeholder="Şifrenizi tekrar girin" required>
+                    <label for="SifreTekrar">Şifre Tekrar</label>
+                </div>
+
+                <button type="submit" class="btn btn-admin-create">
+                    <i class="bi bi-shield-check me-2"></i>Admin Hesabı Oluştur
+                </button>
+            </form>
+
+            <div class="admin-links">
+                <a href="@Url.Action("Login", "Admin")">
+                    <i class="bi bi-arrow-left me-1"></i>Admin Girişine Dön
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Form submit olduğunda loading state ekle
+        document.querySelector('form').addEventListener('submit', function() {
+            const button = document.querySelector('.btn-admin-create');
+            button.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Oluşturuluyor...';
+            button.disabled = true;
+        });
+    </script>
+} 
