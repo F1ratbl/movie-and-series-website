@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("FilmDiziSitesi")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+55afeacc9671218388c977e8d27eea86cf32ee02")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+dd122dca19e4ab657362bc752696c0a7d99f5400")]
 [assembly: System.Reflection.AssemblyProductAttribute("FilmDiziSitesi")]
 [assembly: System.Reflection.AssemblyTitleAttribute("FilmDiziSitesi")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

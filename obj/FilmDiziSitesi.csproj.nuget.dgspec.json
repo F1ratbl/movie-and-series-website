@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/Users/firat/movieWeb/FilmDiziSitesi/FilmDiziSitesi.csproj": {}
+    "/Users/kasimozel/Downloads/movie-and-series-website-main/movie-and-series-website/FilmDiziSitesi.csproj": {}
   },
   "projects": {
-    "/Users/firat/movieWeb/FilmDiziSitesi/FilmDiziSitesi.csproj": {
+    "/Users/kasimozel/Downloads/movie-and-series-website-main/movie-and-series-website/FilmDiziSitesi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/firat/movieWeb/FilmDiziSitesi/FilmDiziSitesi.csproj",
+        "projectUniqueName": "/Users/kasimozel/Downloads/movie-and-series-website-main/movie-and-series-website/FilmDiziSitesi.csproj",
         "projectName": "FilmDiziSitesi",
-        "projectPath": "/Users/firat/movieWeb/FilmDiziSitesi/FilmDiziSitesi.csproj",
-        "packagesPath": "/Users/firat/.nuget/packages/",
-        "outputPath": "/Users/firat/movieWeb/FilmDiziSitesi/obj/",
+        "projectPath": "/Users/kasimozel/Downloads/movie-and-series-website-main/movie-and-series-website/FilmDiziSitesi.csproj",
+        "packagesPath": "/Users/kasimozel/.nuget/packages/",
+        "outputPath": "/Users/kasimozel/Downloads/movie-and-series-website-main/movie-and-series-website/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/firat/.nuget/NuGet/NuGet.Config"
+          "/Users/kasimozel/.nuget/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
@@ -44,9 +44,17 @@
         "net9.0": {
           "targetAlias": "net9.0",
           "dependencies": {
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[9.0.5, )"
+              "version": "[9.0.6, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[9.0.6, )"
             },
             "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
@@ -57,6 +65,18 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[9.0.5, )"
+            },
+            "Microsoft.IdentityModel.Tokens": {
+              "target": "Package",
+              "version": "[8.12.1, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[8.1.2, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[8.12.1, )"
             }
           },
           "imports": [

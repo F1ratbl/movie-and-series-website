@@ -1,7 +1,10 @@
+using FilmDiziSitesi.Services;
 using Microsoft.AspNetCore.Mvc;
 using FilmDiziSitesi.Models;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Configuration;
+using System;
 
 namespace FilmDiziSitesi.Controllers
 {
@@ -9,8 +12,17 @@ namespace FilmDiziSitesi.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private static List<UserModel> users = new List<UserModel>();
+        public static List<UserModel> users = new List<UserModel>();
         private static int nextId = 1;
+        private readonly IConfiguration _configuration;
+
+        // IConfiguration'u constructor ile alıyoruz
+        public UsersController(IConfiguration configuration)
+        {
+            _configuration = configuration;
+            // TokenService statik yapıysa burada konfigürasyonu veriyoruz
+            TokenService.Configure(_configuration);
+        }
 
         [HttpGet]
         public ActionResult<IEnumerable<UserModel>> Get()
@@ -60,5 +72,22 @@ namespace FilmDiziSitesi.Controllers
             users.Remove(user);
             return NoContent();
         }
+
+        [HttpPost("login")]
+        public IActionResult Login([FromBody] UserModel loginUser)
+        {
+            var user = users.FirstOrDefault(u =>
+                u.Email == loginUser.Email && u.Sifre == loginUser.Sifre);
+
+            if (user == null)
+                return Unauthorized("Kullanıcı bulunamadı veya şifre yanlış");
+
+            // TokenService statik ve Configure edilmiş olduğundan doğrudan çağırıyoruz
+            var token = TokenService.CreateToken(user.KullaniciAdi);
+
+            return Ok(new { token });
+        }
     }
 }
+
+
