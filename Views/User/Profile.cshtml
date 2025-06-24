@@ -2,6 +2,7 @@
 @model FilmDiziSitesi.Models.UserModel
 @{
     ViewData["Title"] = "Profil";
+    var defaultAvatar = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiByeD0iNjAiIGZpbGw9InVybCgjZ3JhZGllbnQpIi8+CjxwYXRoIGQ9Ik02MCA2NUM2NS41MjI4IDY1IDcwIDY5LjQ3NzIgNzAgNzVDNzAgODAuNTIyOCA2NS41MjI4IDg1IDYwIDg1QzU0LjQ3NzIgODUgNTAgODAuNTIyOCA1MCA3NUM1MCA2OS40NzcyIDU0LjQ3NzIgNjUgNjAgNjVaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNNzAgOTVDNzAgOTUuNTUyMyA2OS41NTIzIDk2IDY5IDk2SDUxQzUwLjQ0NzcgOTYgNTAgOTUuNTUyMyA1MCA5NVY4NUM1MCA4NC40NDc3IDUwLjQ0NzcgODQgNTEgODRINjlDNjkuNTUyMyA4NCA3MCA4NC40NDc3IDcwIDg1Vjk1WiIgZmlsbD0id2hpdGUiLz4KPGRlZnM+CjxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZGllbnQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgo8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZmY2YjZiO3N0b3Atb3BhY2l0eToxIiAvPgo8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiM0ZWNkYzQ7c3RvcC1vcGFjaXR5OjEiIC8+CjwvbGluZWFyR3JhZGllbnQ+CjwvZGVmcz4KPC9zdmc+";
 }
 
 <style>
@@ -20,16 +21,6 @@
         border: 1px solid rgba(255, 255, 255, 0.18);
         text-align: center;
         color: white;
-    }
-
-    .profile-avatar {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        object-fit: cover;
-        border: 4px solid rgba(255, 255, 255, 0.2);
-        margin-bottom: 20px;
-        background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
     }
 
     .profile-info h3 {
@@ -155,7 +146,6 @@
         <div class="row justify-content-center">
             <div class="col-lg-4 col-md-6 mb-4">
                 <div class="profile-card">
-                    <img src="/images/default-avatar.png" class="profile-avatar" alt="@Model.KullaniciAdi" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiByeD0iNjAiIGZpbGw9InVybCgjZ3JhZGllbnQpIi8+CjxwYXRoIGQ9Ik02MCA2NUM2NS41MjI4IDY1IDcwIDY5LjQ3NzIgNzAgNzVDNzAgODAuNTIyOCA2NS41MjI4IDg1IDYwIDg1QzU0LjQ3NzIgODUgNTAgODAuNTIyOCA1MCA3NUM1MCA2OS40NzcyIDU0LjQ3NzIgNjUgNjAgNjVaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNNzAgOTVDNzAgOTUuNTUyMyA2OS41NTIzIDk2IDY5IDk2SDUxQzUwLjQ0NzcgOTYgNTAgOTUuNTUyMyA1MCA5NVY4NUM1MCA4NC40NDc3IDUwLjQ0NzcgODQgNTEgODRINjlDNjkuNTUyMyA4NCA3MCA4NC40NDc3IDcwIDg1Vjk1WiIgZmlsbD0id2hpdGUiLz4KPGRlZnM+CjxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZGllbnQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgo8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZmY2YjZiO3N0b3Atb3BhY2l0eToxIiAvPgo8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiM0ZWNkYzQ7c3RvcC1vcGFjaXR5OjEiIC8+CjwvbGluZWFyR3JhZGllbnQ+CjwvZGVmcz4KPC9zdmc+'">
                     <div class="profile-info">
                         <h3>@Model.KullaniciAdi</h3>
                         <p>@Model.Email</p>
@@ -165,31 +155,23 @@
                             <div class="stat-label">Kayıt Tarihi</div>
                             <div class="stat-value">@Model.KayitTarihi.ToString("dd.MM.yyyy")</div>
                         </div>
-                        <div class="profile-stat">
-                            <div class="stat-label">Rol</div>
-                            <div class="stat-value">@Model.Role</div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">E-posta</label>
+                                <input type="email" class="form-control w-100" style="font-size:1.1rem; min-width:180px;" value="@Model.Email" readonly />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Rol</label>
+                                <input type="text" class="form-control" value="@Model.Role" readonly />
+                            </div>
                         </div>
                     </div>
                     <a asp-action="EditProfile" class="btn btn-edit-profile">
                         <i class="bi bi-pencil-square me-2"></i>
                         Profili Düzenle
                     </a>
-                </div>
-            </div>
-            <div class="col-lg-8 col-md-12">
-                <div class="profile-section">
-                    <h5><i class="bi bi-chat-left-text"></i>Son Yorumlar</h5>
-                    <div class="empty-state">
-                        <i class="bi bi-chat-left-text"></i>
-                        <p>Henüz yorum yapmadınız.</p>
-                    </div>
-                </div>
-                <div class="profile-section">
-                    <h5><i class="bi bi-star"></i>Son Puanlamalar</h5>
-                    <div class="empty-state">
-                        <i class="bi bi-star"></i>
-                        <p>Henüz puanlama yapmadınız.</p>
-                    </div>
                 </div>
             </div>
         </div>

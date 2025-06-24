@@ -3,17 +3,23 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Movie & Series Website</title>
+    <title>@ViewData["Title"] - HDFilmCenneti</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        header {
+            position: relative;
+            z-index: 1050; /* Bootstrap dropdown z-index değerinden daha yüksek */
+        }
+    </style>
 </head>
 <body>
     <header>
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MovieHub</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">HDFilmCenneti</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
@@ -28,20 +34,20 @@
                     
                     @if (Context.Session.GetString("UserId") != null)
                     {
-                        <div class="dropdown me-2">
+                        <div class="dropdown">
                             <button class="btn btn-outline-light dropdown-toggle" type="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-person-circle"></i> @Context.Session.GetString("UserName")
                             </button>
-                            <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="userDropdown">
-                                <li><a class="dropdown-item" asp-controller="User" asp-action="Profile">Profil</a></li>
-                                <li><a class="dropdown-item" asp-controller="User" asp-action="EditProfile">Profili Düzenle</a></li>
-                                @if (Context.Session.GetString("UserRole") == "Admin")
+                            <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="userDropdown">
+                                @if (Context.Session.GetString("Role") == "Admin")
                                 {
-                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" asp-controller="Admin" asp-action="Dashboard">
                                         <i class="bi bi-speedometer2 me-2"></i>Admin Paneli
                                     </a></li>
+                                    <li><hr class="dropdown-divider"></li>
                                 }
+                                <li><a class="dropdown-item" asp-controller="User" asp-action="Profile">Profil</a></li>
+                                <li><a class="dropdown-item" asp-controller="User" asp-action="EditProfile">Profili Düzenle</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" asp-controller="User" asp-action="Logout">Çıkış Yap</a></li>
                             </ul>
@@ -65,15 +71,15 @@
         </nav>
     </header>
 
-    <div class="container">
+    <div class="container-fluid">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2024 - MovieHub - <a asp-area="" asp-controller="Home" asp-action="Privacy">Gizlilik</a>
+        <div class="container-fluid">
+            &copy; 2024 - HDFilmCenneti - <a asp-area="" asp-controller="Home" asp-action="Privacy">Gizlilik</a>
         </div>
     </footer>
 

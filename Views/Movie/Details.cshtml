@@ -6,7 +6,7 @@
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-4">
-            @if (!string.IsNullOrEmpty(Model.AfişUrl))
+            @if (!string.IsNullOrWhiteSpace(Model.AfişUrl))
             {
                 <img src="@Model.AfişUrl" class="img-fluid rounded shadow" alt="@Model.Ad" style="width: 100%; height: auto;">
             }
@@ -31,7 +31,7 @@
                         <i class="bi bi-calendar"></i> <strong>Yıl:</strong> @Model.Yil
                     </p>
                     <p class="text-muted mb-2">
-                        <i class="bi bi-clock"></i> <strong>Süre:</strong> @Model.Süre.ToString(@"hh\:mm") dakika
+                        <i class="bi bi-clock"></i> <strong>Süre:</strong> @(Model.Süre ?? "Belirtilmemiş")
                     </p>
                     <p class="text-muted mb-2">
                         <i class="bi bi-film"></i> <strong>Tür:</strong> @Model.Tür
@@ -45,37 +45,37 @@
                         <i class="bi bi-translate"></i> <strong>Dil:</strong> @Model.Dil
                     </p>
                     <p class="text-muted mb-2">
-                        <i class="bi bi-calendar-event"></i> <strong>Vizyon:</strong> @Model.VizyonTarihi.ToString("dd.MM.yyyy")
+                        <i class="bi bi-calendar-event"></i> <strong>Vizyon:</strong> @(Model.VizyonTarihi.HasValue ? Model.VizyonTarihi.Value.ToString("dd.MM.yyyy") : "Belirtilmemiş")
                     </p>
                     <p class="text-muted mb-2">
-                        <i class="bi bi-eye"></i> <strong>İzlenme:</strong> @Model.IzlenmeSayisi.ToString("N0")
+                        <i class="bi bi-eye"></i> <strong>İzlenme:</strong> @(Model.IzlenmeSayisi.HasValue ? Model.IzlenmeSayisi.Value.ToString("N0") : "N/A")
                     </p>
                     <p class="text-muted mb-2">
-                        <i class="bi bi-currency-dollar"></i> <strong>Bütçe:</strong> $@Model.Bütçe.ToString("N0")
+                        <i class="bi bi-currency-dollar"></i> <strong>Bütçe:</strong> @(Model.Bütçe.HasValue ? "$" + Model.Bütçe.Value.ToString("N0") : "Belirtilmemiş")
                     </p>
                 </div>
             </div>
             
             <div class="mb-4">
                 <h5>Açıklama</h5>
-                <p class="lead">@Model.Açıklama</p>
+                <p class="lead">@(Model.Açıklama ?? "Açıklama mevcut değil.")</p>
             </div>
             
             <div class="row mb-4">
                 <div class="col-md-6">
                     <h5>Yönetmen</h5>
-                    <p>@Model.Yönetmen</p>
+                    <p>@(Model.Yönetmen ?? "Belirtilmemiş")</p>
                 </div>
                 <div class="col-md-6">
                     <h5>Oyuncular</h5>
-                    <p>@Model.Oyuncular</p>
+                    <p>@(Model.Oyuncular ?? "Belirtilmemiş")</p>
                 </div>
             </div>
             
             <div class="row mb-4">
                 <div class="col-md-6">
                     <h5>Gişe Hasılatı</h5>
-                    <p class="text-success">$@Model.GiseHasilati.ToString("N0")</p>
+                    <p class="text-success">@(Model.GiseHasilati.HasValue ? "$" + Model.GiseHasilati.Value.ToString("N0") : "Belirtilmemiş")</p>
                 </div>
                 <div class="col-md-6">
                     @if (!string.IsNullOrEmpty(Model.FragmanUrl))

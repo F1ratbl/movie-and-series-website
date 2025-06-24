@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-g" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Admin Paneli</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #0d1117;
+            color: #c9d1d9;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 260px;
+            padding: 1.5rem;
+            background-color: #161b22;
+            border-right: 1px solid #30363d;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #58a6ff;
+            margin-bottom: 2rem;
+        }
+
+        .sidebar-nav .nav-link {
+            color: #8b949e;
+            font-size: 1rem;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            margin-bottom: 0.5rem;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .sidebar-nav .nav-link:hover, .sidebar-nav .nav-link.active {
+            background-color: #58a6ff33;
+            color: #58a6ff;
+        }
+        
+        .sidebar-nav .nav-link i {
+            margin-right: 1rem;
+        }
+        
+        .main-content {
+            margin-left: 260px;
+            padding: 2rem;
+        }
+        
+        .page-header {
+            border-bottom: 1px solid #30363d;
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .page-header h1 {
+            color: #f0f6fc;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2 class="sidebar-header">Admin Paneli</h2>
+        <ul class="nav flex-column sidebar-nav">
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["Action"].ToString() == "Dashboard" ? "active" : "")" asp-action="Dashboard" asp-controller="Admin">
+                    <i class="bi bi-grid-1x2-fill"></i> Dashboard
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["Action"].ToString() == "ManageMovies" ? "active" : "")" asp-action="ManageMovies" asp-controller="Admin">
+                    <i class="bi bi-film"></i> Film Yönetimi
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link @(ViewContext.RouteData.Values["Action"].ToString() == "ManageUsers" ? "active" : "")" asp-action="ManageUsers" asp-controller="Admin">
+                    <i class="bi bi-people-fill"></i> Kullanıcı Yönetimi
+                </a>
+            </li>
+        </ul>
+        <div class="mt-auto">
+             <a class="nav-link" asp-action="Index" asp-controller="Home">
+                <i class="bi bi-box-arrow-left"></i> Siteye Dön
+            </a>
+        </div>
+    </div>
+
+    <div class="main-content">
+        <header class="page-header">
+            <h1>@ViewData["Title"]</h1>
+        </header>
+        <main>
+            @RenderBody()
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html> 

@@ -28,56 +28,49 @@ namespace FilmDiziSitesi.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("AfişUrl")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Açıklama")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<decimal>("Bütçe")
-                        .HasColumnType("TEXT");
+                    b.Property<decimal?>("Bütçe")
+                        .HasColumnType("REAL");
 
                     b.Property<string>("Dil")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("FragmanUrl")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<decimal>("GiseHasilati")
-                        .HasColumnType("TEXT");
+                    b.Property<decimal?>("GiseHasilati")
+                        .HasColumnType("REAL");
 
-                    b.Property<int>("IzlenmeSayisi")
+                    b.Property<int?>("IzlenmeSayisi")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Oyuncular")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<double>("Puan")
                         .HasColumnType("REAL");
 
-                    b.Property<TimeSpan>("Süre")
+                    b.Property<string>("Süre")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Tür")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("VizyonTarihi")
+                    b.Property<DateTime?>("VizyonTarihi")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Yil")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Yönetmen")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Ülke")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
@@ -103,7 +96,6 @@ namespace FilmDiziSitesi.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Role")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Sifre")

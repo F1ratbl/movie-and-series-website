@@ -18,21 +18,10 @@
             <div class="row">
                 @foreach (var item in Model)
                 {
-                    string formattedSure = "00:00";
-                    if (item.Süre != null)
-                    {
-                        try
-                        {
-                            formattedSure = item.Süre.ToString(@"hh\\:mm");
-                        }
-                        catch
-                        {
-                            formattedSure = "00:00";
-                        }
-                    }
+                    string formattedSure = item.Süre ?? "00:00";
                     <div class="col-md-3 mb-4">
                         <div class="card h-100">
-                            <img src="@item.AfişUrl" class="card-img-top" alt="@item.Ad">
+                            <img src="@(string.IsNullOrWhiteSpace(item.AfişUrl) ? "https://via.placeholder.com/300x450/2c3e50/ffffff?text=" + System.Net.WebUtility.UrlEncode(item.Ad) : item.AfişUrl)" class="card-img-top" alt="@item.Ad">
                             <div class="card-body">
                                 <h5 class="card-title">@item.Ad</h5>
                                 <div class="rating mb-2">
@@ -42,12 +31,12 @@
                                     }
                                     <span class="ms-2">@item.Puan.ToString("F1")</span>
                                 </div>
-                                <p class="card-text">@item.Açıklama</p>
+                                <p class="card-text">@(item.Açıklama ?? "Açıklama yok.")</p>
                                 <div class="d-flex justify-content-between align-items-center">
                                     <span class="badge bg-primary">@item.Tür</span>
                                     <small class="text-muted">@item.Yil</small>
                                 </div>
-                                <button type="button" class="btn btn-primary mt-3 w-100" onclick="showMovieDetails(@item.Id, '@item.Ad.Replace("'", "\\'")', '@item.Açıklama.Replace("'", "\\'")', '@item.Tür.Replace("'", "\\'")', @item.Yil, @item.Puan, '@item.Yönetmen.Replace("'", "\\'")', '@item.Oyuncular.Replace("'", "\\'")', '@item.Ülke.Replace("'", "\\'")', '@item.Dil.Replace("'", "\\'")', @item.Bütçe, @item.GiseHasilati, @item.IzlenmeSayisi, '@item.VizyonTarihi.ToString("dd.MM.yyyy")', '@formattedSure', '@item.FragmanUrl.Replace("'", "\\'")', '@item.AfişUrl.Replace("'", "\\'")')">
+                                <button type="button" class="btn btn-primary mt-3 w-100" onclick="showMovieDetails(@item.Id, '@item.Ad.Replace("'", "\\'")', '@((item.Açıklama ?? "").Replace("'", "\\'"))', '@item.Tür.Replace("'", "\\'")', @item.Yil, @item.Puan, '@((item.Yönetmen ?? "").Replace("'", "\\'"))', '@((item.Oyuncular ?? "").Replace("'", "\\'"))', '@((item.Ülke ?? "").Replace("'", "\\'"))', '@((item.Dil ?? "").Replace("'", "\\'"))', @(item.Bütçe ?? 0), @(item.GiseHasilati ?? 0), @(item.IzlenmeSayisi ?? 0), '@(item.VizyonTarihi?.ToString("dd.MM.yyyy") ?? "")', '@formattedSure', '@((item.FragmanUrl ?? "").Replace("'", "\\'"))', '@((item.AfişUrl ?? "").Replace("'", "\\'"))')">
                                     Detayları Gör & Puanla
                                 </button>
                             </div>
@@ -202,7 +191,7 @@ function showMovieDetails(id, title, description, genre, year, rating, director,
     
     // Poster
     const posterImg = document.getElementById('moviePoster');
-    if (posterUrl && posterUrl !== '') {
+    if (posterUrl && posterUrl.trim() !== '') {
         posterImg.src = posterUrl;
     } else {
         posterImg.src = `https://via.placeholder.com/400x600/2c3e50/ffffff?text=${encodeURIComponent(title)}`;

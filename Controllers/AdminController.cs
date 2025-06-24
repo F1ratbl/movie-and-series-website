@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using FilmDiziSitesi.Models;
 using FilmDiziSitesi.Data;
 using FilmDiziSitesi.Services;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace FilmDiziSitesi.Controllers
 {
@@ -16,233 +19,177 @@ namespace FilmDiziSitesi.Controllers
             _movieApiService = movieApiService;
         }
 
-        // Admin giriş kontrolü
-        private bool IsAdmin()
+        private bool IsLoggedIn()
         {
             var userId = HttpContext.Session.GetString("UserId");
-            if (userId == null) return false;
-
-            var user = _context.Users.FirstOrDefault(u => u.Id == int.Parse(userId));
-            return user?.Role == "Admin";
+            var role = HttpContext.Session.GetString("Role");
+            return !string.IsNullOrEmpty(userId) && (role == "Admin");
         }
 
-        // GET: Admin/Login
-        public IActionResult Login()
+        // GET: /Admin/Dashboard
+        public async Task<IActionResult> Dashboard()
         {
-            return View();
-        }
-
-        // POST: Admin/Login
-        [HttpPost]
-        public IActionResult Login(string Email, string Sifre)
-        {
-            if (string.IsNullOrEmpty(Email) || string.IsNullOrEmpty(Sifre))
-            {
-                TempData["ErrorMessage"] = "E-posta ve şifre gereklidir!";
-                return View();
-            }
-
-            var user = _context.Users.FirstOrDefault(u => u.Email == Email && u.Sifre == Sifre);
-            if (user == null)
-            {
-                TempData["ErrorMessage"] = "E-posta veya şifre hatalı!";
-                return View();
-            }
-
-            if (user.Role != "Admin")
-            {
-                TempData["ErrorMessage"] = "Bu sayfaya erişim yetkiniz yok!";
-                return View();
-            }
-
-            HttpContext.Session.SetString("UserId", user.Id.ToString());
-            HttpContext.Session.SetString("UserName", user.KullaniciAdi);
-            HttpContext.Session.SetString("UserRole", user.Role);
-
-            return RedirectToAction("Dashboard");
-        }
-
-        // GET: Admin/Dashboard
-        public IActionResult Dashboard()
-        {
-            if (!IsAdmin())
-            {
+            if (!IsLoggedIn())
                 return RedirectToAction("Login");
+
+            ViewBag.TotalMovies = await _context.Movies.CountAsync();
+            ViewBag.TotalUsers = await _context.Users.CountAsync();
+            if (await _context.Movies.AnyAsync())
+            {
+                ViewBag.AvgRating = (await _context.Movies.AverageAsync(m => m.Puan)).ToString("F1");
             }
-
-            // İstatistikleri hesapla
-            var totalMovies = _context.Movies.Count();
-            var totalUsers = _context.Users.Count();
-            var totalViews = _context.Movies.Sum(m => m.IzlenmeSayisi);
-            var avgRating = _context.Movies.Average(m => m.Puan);
-
-            ViewBag.TotalMovies = totalMovies;
-            ViewBag.TotalUsers = totalUsers;
-            ViewBag.TotalViews = totalViews;
-            ViewBag.AvgRating = avgRating.ToString("F1");
-
-            // Son eklenen filmler
-            var recentMovies = _context.Movies.OrderByDescending(m => m.Id).Take(5).ToList();
-            ViewBag.RecentMovies = recentMovies;
+            else
+            {
+                ViewBag.AvgRating = "N/A";
+            }
 
             return View();
         }
 
-        // GET: Admin/ManageMovies
-        public IActionResult ManageMovies()
+        // GET: /Admin/ManageMovies
+        public async Task<IActionResult> ManageMovies()
         {
-            if (!IsAdmin())
-            {
+            if (!IsLoggedIn())
                 return RedirectToAction("Login");
-            }
-
-            var movies = _context.Movies.OrderByDescending(m => m.Id).ToList();
+            var movies = await _context.Movies.ToListAsync();
             return View(movies);
         }
 
-        // GET: Admin/AddMovie
+        // GET: /Admin/AddMovie
         public IActionResult AddMovie()
         {
-            if (!IsAdmin())
-            {
+            if (!IsLoggedIn())
                 return RedirectToAction("Login");
-            }
-
             return View();
         }
 
-        // POST: Admin/AddMovie
+        // POST: /Admin/AddMovie
         [HttpPost]
-        public IActionResult AddMovie(MovieModel movie)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddMovie(MovieModel movie)
         {
-            if (!IsAdmin())
-            {
+            if (!IsLoggedIn())
                 return RedirectToAction("Login");
-            }
 
-            if (string.IsNullOrEmpty(movie.Ad))
+            // Otomatik veri düzeltme
+            AutoCorrectMovieFields(movie);
+
+            if (ModelState.IsValid)
             {
-                TempData["ErrorMessage"] = "Film adı gereklidir!";
-                return View(movie);
+                _context.Add(movie);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(ManageMovies));
             }
-
-            if (string.IsNullOrEmpty(movie.Tür))
-            {
-                TempData["ErrorMessage"] = "Film türü gereklidir!";
-                return View(movie);
-            }
-
-            if (movie.Yil <= 0)
-            {
-                TempData["ErrorMessage"] = "Geçerli bir yıl giriniz!";
-                return View(movie);
-            }
-
-            // Varsayılan değerler
-            if (movie.IzlenmeSayisi == 0) movie.IzlenmeSayisi = 0;
-            if (movie.Puan == 0) movie.Puan = 0;
-
-            _context.Movies.Add(movie);
-            _context.SaveChanges();
-
-            TempData["SuccessMessage"] = "Film başarıyla eklendi!";
-            return RedirectToAction("ManageMovies");
-        }
-
-        // GET: Admin/EditMovie/{id}
-        public IActionResult EditMovie(int id)
-        {
-            if (!IsAdmin())
-            {
-                return RedirectToAction("Login");
-            }
-
-            var movie = _context.Movies.FirstOrDefault(m => m.Id == id);
-            if (movie == null)
-            {
-                TempData["ErrorMessage"] = "Film bulunamadı!";
-                return RedirectToAction("ManageMovies");
-            }
-
             return View(movie);
         }
 
-        // POST: Admin/EditMovie
-        [HttpPost]
-        public IActionResult EditMovie(MovieModel movie)
+        // GET: /Admin/EditMovie/5
+        public async Task<IActionResult> EditMovie(int? id)
         {
-            if (!IsAdmin())
-            {
+            if (!IsLoggedIn())
                 return RedirectToAction("Login");
-            }
-
-            if (string.IsNullOrEmpty(movie.Ad))
+            if (id == null)
             {
-                TempData["ErrorMessage"] = "Film adı gereklidir!";
-                return View(movie);
+                return NotFound();
             }
 
-            var existingMovie = _context.Movies.FirstOrDefault(m => m.Id == movie.Id);
-            if (existingMovie == null)
-            {
-                TempData["ErrorMessage"] = "Film bulunamadı!";
-                return RedirectToAction("ManageMovies");
-            }
-
-            // Film bilgilerini güncelle
-            existingMovie.Ad = movie.Ad;
-            existingMovie.Tür = movie.Tür;
-            existingMovie.Yil = movie.Yil;
-            existingMovie.Yönetmen = movie.Yönetmen;
-            existingMovie.Oyuncular = movie.Oyuncular;
-            existingMovie.Ülke = movie.Ülke;
-            existingMovie.Dil = movie.Dil;
-            existingMovie.Bütçe = movie.Bütçe;
-            existingMovie.GiseHasilati = movie.GiseHasilati;
-            existingMovie.IzlenmeSayisi = movie.IzlenmeSayisi;
-            existingMovie.Puan = movie.Puan;
-            existingMovie.VizyonTarihi = movie.VizyonTarihi;
-            existingMovie.Süre = movie.Süre;
-            existingMovie.Açıklama = movie.Açıklama;
-            existingMovie.AfişUrl = movie.AfişUrl;
-            existingMovie.FragmanUrl = movie.FragmanUrl;
-
-            _context.SaveChanges();
-
-            TempData["SuccessMessage"] = "Film başarıyla güncellendi!";
-            return RedirectToAction("ManageMovies");
-        }
-
-        // POST: Admin/DeleteMovie/{id}
-        [HttpPost]
-        public IActionResult DeleteMovie(int id)
-        {
-            if (!IsAdmin())
-            {
-                return RedirectToAction("Login");
-            }
-
-            var movie = _context.Movies.FirstOrDefault(m => m.Id == id);
+            var movie = await _context.Movies.FindAsync(id);
             if (movie == null)
             {
-                TempData["ErrorMessage"] = "Film bulunamadı!";
-                return RedirectToAction("ManageMovies");
+                return NotFound();
+            }
+            return View(movie);
+        }
+
+        // POST: /Admin/EditMovie/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditMovie(int id, MovieModel movie)
+        {
+            if (!IsLoggedIn())
+                return RedirectToAction("Login");
+            if (id != movie.Id)
+            {
+                return NotFound();
             }
 
-            _context.Movies.Remove(movie);
-            _context.SaveChanges();
+            // Otomatik veri düzeltme
+            AutoCorrectMovieFields(movie);
 
-            TempData["SuccessMessage"] = "Film başarıyla silindi!";
-            return RedirectToAction("ManageMovies");
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(movie);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!MovieExists(movie.Id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(ManageMovies));
+            }
+            return View(movie);
+        }
+
+        // POST: /Admin/DeleteMovie/5
+        [HttpPost, ActionName("DeleteMovie")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteMovieConfirmed(int id)
+        {
+            if (!IsLoggedIn())
+                return RedirectToAction("Login");
+            var movie = await _context.Movies.FindAsync(id);
+            _context.Movies.Remove(movie);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(ManageMovies));
+        }
+
+        // GET: /Admin/ManageUsers
+        public async Task<IActionResult> ManageUsers()
+        {
+            if (!IsLoggedIn())
+                return RedirectToAction("Login");
+            var users = await _context.Users.ToListAsync();
+            return View(users);
+        }
+
+        // POST: /Admin/DeleteUser/5
+        [HttpPost, ActionName("DeleteUser")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteUser(int id)
+        {
+            if (!IsLoggedIn())
+                return RedirectToAction("Login");
+            var userToDelete = await _context.Users.FindAsync(id);
+            if (userToDelete == null)
+            {
+                return NotFound();
+            }
+            var currentUserId = HttpContext.Session.GetString("UserId");
+            if (userToDelete.Id.ToString() == currentUserId)
+            {
+                TempData["ErrorMessage"] = "Kendinizi silemezsiniz.";
+                return RedirectToAction(nameof(ManageUsers));
+            }
+            _context.Users.Remove(userToDelete);
+            await _context.SaveChangesAsync();
+            TempData["SuccessMessage"] = "Kullanıcı başarıyla silindi.";
+            return RedirectToAction(nameof(ManageUsers));
         }
 
         // GET: Admin/SyncMovies
         public async Task<IActionResult> SyncMovies()
         {
-            if (!IsAdmin())
-            {
+            if (!IsLoggedIn())
                 return RedirectToAction("Login");
-            }
 
             var result = await _movieApiService.SyncMoviesToDatabaseAsync(_context);
             
@@ -262,74 +209,139 @@ namespace FilmDiziSitesi.Controllers
         public IActionResult Logout()
         {
             HttpContext.Session.Clear();
-            return RedirectToAction("Login");
+            return RedirectToAction("Login", "User");
         }
 
-        // GET: Admin/CreateAdmin
-        public IActionResult CreateAdmin()
+        // GET: /Admin/Login
+        [HttpGet]
+        public IActionResult Login()
         {
             return View();
         }
 
-        // POST: Admin/CreateAdmin
+        // POST: /Admin/Login
         [HttpPost]
-        public IActionResult CreateAdmin(UserModel model, string SifreTekrar)
+        [ValidateAntiForgeryToken]
+        public IActionResult Login(string email, string sifre)
         {
-            if (string.IsNullOrEmpty(model.KullaniciAdi) || string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Sifre))
+            var user = _context.Users.FirstOrDefault(u => u.Email == email && u.Sifre == sifre && u.Role == "Admin");
+            if (user != null)
             {
-                TempData["ErrorMessage"] = "Tüm alanlar gereklidir!";
+                HttpContext.Session.SetString("UserId", user.Id.ToString());
+                HttpContext.Session.SetString("UserName", user.KullaniciAdi);
+                HttpContext.Session.SetString("Role", user.Role ?? "User");
+                return RedirectToAction("Dashboard");
+            }
+            ViewBag.Error = "E-posta veya şifre hatalı!";
+            return View();
+        }
+
+        // GET: /Admin/Register
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        // POST: /Admin/Register
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(UserModel model, string SifreTekrar)
+        {
+            if (string.IsNullOrEmpty(model.KullaniciAdi))
+            {
+                ViewBag.Error = "Kullanıcı adı gereklidir!";
                 return View(model);
             }
-
+            if (string.IsNullOrEmpty(model.Email))
+            {
+                ViewBag.Error = "E-posta gereklidir!";
+                return View(model);
+            }
+            if (string.IsNullOrEmpty(model.Sifre))
+            {
+                ViewBag.Error = "Şifre gereklidir!";
+                return View(model);
+            }
             if (model.Sifre != SifreTekrar)
             {
-                TempData["ErrorMessage"] = "Şifreler eşleşmiyor!";
+                ViewBag.Error = "Şifreler eşleşmiyor!";
                 return View(model);
             }
-
-            if (model.Sifre.Length < 8)
-            {
-                TempData["ErrorMessage"] = "Şifre en az 8 karakter olmalıdır!";
-                return View(model);
-            }
-
-            // E-posta kontrolü
             var existingUser = _context.Users.FirstOrDefault(u => u.Email == model.Email);
             if (existingUser != null)
             {
-                TempData["ErrorMessage"] = "Bu e-posta adresi zaten kullanılıyor!";
+                ViewBag.Error = "Bu e-posta zaten kayıtlı!";
                 return View(model);
             }
-
+            model.Role = "Admin";
             model.KayitTarihi = DateTime.Now;
-            model.Role = "Admin"; // Admin rolü
-
             _context.Users.Add(model);
-            _context.SaveChanges();
-
-            TempData["SuccessMessage"] = "🎉 Admin hesabı başarıyla oluşturuldu! Şimdi giriş yapabilirsiniz.";
+            await _context.SaveChangesAsync();
+            ViewBag.Success = "Admin hesabı başarıyla oluşturuldu! Giriş yapabilirsiniz.";
             return RedirectToAction("Login");
         }
 
-        // GET: Admin/MakeUserAdmin
-        public IActionResult MakeUserAdmin()
+        private bool MovieExists(int id)
         {
-            var users = _context.Users.Where(u => u.Role != "Admin").ToList();
-            return View(users);
+            return _context.Movies.Any(e => e.Id == id);
         }
 
-        // POST: Admin/MakeUserAdmin
-        [HttpPost]
-        public IActionResult MakeUserAdmin(int userId)
+        // Yardımcı metot: Otomatik veri düzeltme
+        private void AutoCorrectMovieFields(MovieModel movie)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Id == userId);
-            if (user != null)
+            // Ülke ismi dil alanına yazılmışsa düzelt
+            var knownCountries = new[] { "Amerika", "Türkiye", "İngiltere", "Fransa", "Almanya", "Japonya", "İtalya", "İspanya", "Rusya", "Çin", "Hindistan", "Kanada", "Brezilya", "Meksika", "Avustralya" };
+            if (!string.IsNullOrWhiteSpace(movie.Dil) && knownCountries.Contains(movie.Dil.Trim(), StringComparer.OrdinalIgnoreCase))
             {
-                user.Role = "Admin";
-                _context.SaveChanges();
-                TempData["SuccessMessage"] = $"Kullanıcı '{user.KullaniciAdi}' admin yapıldı!";
+                movie.Ülke = movie.Dil;
+                movie.Dil = null;
             }
-            return RedirectToAction("MakeUserAdmin");
+            // Dil ismi ülke alanına yazılmışsa düzelt
+            var knownLanguages = new[] { "Türkçe", "İngilizce", "Fransızca", "Almanca", "Japonca", "İtalyanca", "İspanyolca", "Rusça", "Çince", "Hintçe", "Portekizce", "Arapça", "Korece" };
+            if (!string.IsNullOrWhiteSpace(movie.Ülke) && knownLanguages.Contains(movie.Ülke.Trim(), StringComparer.OrdinalIgnoreCase))
+            {
+                movie.Dil = movie.Ülke;
+                movie.Ülke = null;
+            }
+            // Oyuncular alanında tek bir isim varsa ve yönetmen alanı boşsa, bu ismi yönetmen alanına taşı
+            if (string.IsNullOrWhiteSpace(movie.Yönetmen) && !string.IsNullOrWhiteSpace(movie.Oyuncular))
+            {
+                var oyuncularTrim = movie.Oyuncular.Trim();
+                // Virgül yoksa ve 4 kelimeden azsa, muhtemelen yönetmen ismi
+                if (!oyuncularTrim.Contains(",") && oyuncularTrim.Split(' ').Length <= 4)
+                {
+                    movie.Yönetmen = oyuncularTrim;
+                    movie.Oyuncular = null;
+                }
+            }
+            // Yönetmen alanında birden fazla isim ve virgül varsa, oyuncular alanına taşı (ama oyuncular alanı boşsa)
+            if (string.IsNullOrWhiteSpace(movie.Oyuncular) && !string.IsNullOrWhiteSpace(movie.Yönetmen))
+            {
+                if (movie.Yönetmen.Contains(","))
+                {
+                    movie.Oyuncular = movie.Yönetmen;
+                    movie.Yönetmen = null;
+                }
+            }
+            // Bütçe ve Gişe alanları yanlışlıkla birbirine yazılmışsa düzelt
+            if (movie.Bütçe.HasValue && movie.Bütçe > 1000000000 && (!movie.GiseHasilati.HasValue || movie.GiseHasilati == 0))
+            {
+                movie.GiseHasilati = movie.Bütçe;
+                movie.Bütçe = null;
+            }
+            if (movie.GiseHasilati.HasValue && movie.GiseHasilati < 10000000 && (!movie.Bütçe.HasValue || movie.Bütçe == 0))
+            {
+                movie.Bütçe = movie.GiseHasilati;
+                movie.GiseHasilati = null;
+            }
+            // Süre alanı yanlışlıkla yıl veya puan gibi sayısal bir değer aldıysa düzelt
+            if (!string.IsNullOrWhiteSpace(movie.Süre) && int.TryParse(movie.Süre, out int sureInt) && sureInt > 1900 && sureInt < 2100)
+            {
+                movie.Yil = sureInt;
+                movie.Süre = null;
+            }
+            // Diğer benzer kontroller buraya eklenebilir
         }
     }
 } 
