@@ -1,6 +1,7 @@
 @model UserModel
 @{
     ViewData["Title"] = "Profili Düzenle";
+    var defaultAvatar = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTIwIiBoZWlnaHQ9IjEyMCIgdmlld0JveD0iMCAwIDEyMCAxMjAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjAiIGhlaWdodD0iMTIwIiByeD0iNjAiIGZpbGw9InVybCgjZ3JhZGllbnQpIi8+CjxwYXRoIGQ9Ik02MCA2NUM2NS41MjI4IDY1IDcwIDY5LjQ3NzIgNzAgNzVDNzAgODAuNTIyOCA2NS41MjI4IDg1IDYwIDg1QzU0LjQ3NzIgODUgNTAgODAuNTIyOCA1MCA3NUM1MCA2OS40NzcyIDU0LjQ3NzIgNjUgNjAgNjVaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNNzAgOTVDNzAgOTUuNTUyMyA2OS41NTIzIDk2IDY5IDk2SDUxQzUwLjQ0NzcgOTYgNTAgOTUuNTUyMyA1MCA5NVY4NUM1MCA4NC40NDc3IDUwLjQ0NzcgODQgNTEgODRINjlDNjkuNTUyMyA4NCA3MCA4NC40NDc7IDcwIDg1Vjk1WiIgZmlsbD0id2hpdGUiLz4KPGRlZnM+CjxsaW5lYXJHcmFkaWVudCBpZD0iZ3JhZGllbnQiIHgxPSIwJSIgeTE9IjAlIiB4Mj0iMTAwJSIgeTI9IjEwMCUiPgo8c3RvcCBvZmZzZXQ9IjAlIiBzdHlsZT0ic3RvcC1jb2xvcjojZmY2YjZiO3N0b3Atb3BhY2l0eToxIiAvPgo8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0eWxlPSJzdG9wLWNvbG9yOiM0ZWNkYzQ7c3RvcC1vcGFjaXR5OjEiIC8+CjwvbGluZWFyR3JhZGllbnQ+CjwvZGVmcz4KPC9zdmc+";
 }
 
 <style>
@@ -39,7 +40,7 @@
     .form-control {
         background: rgba(255, 255, 255, 0.1);
         border: 1px solid rgba(255, 255, 255, 0.2);
-        color: white;
+        color: #e0e0e0;
         height: 50px;
     }
 
@@ -114,6 +115,29 @@
         color: #4ecdc4;
         margin-right: 10px;
     }
+
+    .avatar-upload-container {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .current-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 4px solid rgba(255, 255, 255, 0.2);
+        margin-bottom: 15px;
+    }
+
+    .form-control-file {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #b8b8b8;
+        padding: 10px;
+        border-radius: 8px;
+        cursor: pointer;
+    }
 </style>
 
 <div class="edit-profile-container">
@@ -122,6 +146,13 @@
             <div class="col-md-8">
                 <div class="edit-profile-card">
                     <h1 class="edit-profile-title">Profili Düzenle</h1>
+
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            @TempData["ErrorMessage"]
+                        </div>
+                    }
                     
                     <div class="info-box">
                         <i class="bi bi-info-circle"></i>
@@ -134,18 +165,26 @@
                         <input type="hidden" asp-for="Id" />
                         <input type="hidden" asp-for="Sifre" />
                         <input type="hidden" asp-for="KayitTarihi" />
-                        <input type="hidden" asp-for="Role" />
 
-                        <div class="form-floating">
-                            <input asp-for="KullaniciAdi" class="form-control" placeholder="Kullanıcı Adı" required>
-                            <label asp-for="KullaniciAdi">Kullanıcı Adı</label>
-                            <span asp-validation-for="KullaniciAdi" class="validation-error"></span>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="KullaniciAdi" class="form-label">Kullanıcı Adı</label>
+                                <input asp-for="KullaniciAdi" class="form-control" type="text" required />
+                                <span asp-validation-for="KullaniciAdi" class="text-danger"></span>
+                            </div>
                         </div>
-
-                        <div class="form-floating">
-                            <input asp-for="Email" class="form-control" type="email" placeholder="name@example.com" required>
-                            <label asp-for="Email">E-posta Adresi</label>
-                            <span asp-validation-for="Email" class="validation-error"></span>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label asp-for="Email" class="form-label">E-posta</label>
+                                <input asp-for="Email" class="form-control" type="email" required />
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label class="form-label">Rol</label>
+                                <input type="text" class="form-control" value="@Model.Role" readonly />
+                            </div>
                         </div>
 
                         <div class="d-flex justify-content-between mt-4">

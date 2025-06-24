@@ -129,7 +129,13 @@ namespace FilmDiziSitesi.Controllers
 
             // Filtreler
             if (!string.IsNullOrEmpty(category))
-                movies = movies.Where(m => m.Tür == category);
+            {
+                var normalizedCategory = category.ToLower();
+                movies = movies.Where(m => m.Tür != null && m.Tür.ToLower().Contains(normalizedCategory));
+                var movieList = movies.ToList();
+                movieList = movieList.Where(m => m.Tür.ToLower().Split(',', '-', '/').Select(t => t.Trim()).Any(t => t == normalizedCategory)).ToList();
+                movies = movieList.AsQueryable();
+            }
             if (year.HasValue)
                 movies = movies.Where(m => m.Yil == year.Value);
             if (minRating.HasValue)
@@ -153,6 +159,18 @@ namespace FilmDiziSitesi.Controllers
             }
 
             return View(movies.ToList());
+        }
+
+        // GET: /Movie/Details/5
+        [HttpGet("Details/{id}")]
+        public IActionResult Details(int id)
+        {
+            var movie = _context.Movies.Find(id);
+            if (movie == null)
+            {
+                return NotFound(); // Film bulunamazsa 404 döndür
+            }
+            return View(movie);
         }
 
         // GET: /Movie/Category
@@ -179,7 +197,7 @@ namespace FilmDiziSitesi.Controllers
 
             // Diğer kategoriler için, birden fazla kategori varsa virgül veya tire ile ayırıp eşleşme yap
             var allMovies = _context.Movies.ToList();
-            var movies = allMovies.Where(m => m.Tür != null && m.Tür.ToLower().Split(',', '-', '/').Select(t => t.Trim()).Any(t => t == normalizedCategory)).ToList();
+            var movies = allMovies.Where(m => !string.IsNullOrEmpty(m.Tür) && m.Tür.ToLower().Split(',', '-', '/').Select(t => t.Trim()).Any(t => t == normalizedCategory)).ToList();
             return View(movies);
         }
 

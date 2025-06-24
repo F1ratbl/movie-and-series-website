@@ -2,6 +2,10 @@ using Microsoft.AspNetCore.Mvc;
 using FilmDiziSitesi.Models;
 using FilmDiziSitesi.Data;  // ApplicationDbContext burada
 using System.Linq;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace FilmDiziSitesi.Controllers
 {
@@ -9,15 +13,22 @@ namespace FilmDiziSitesi.Controllers
     public class UserController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public UserController(ApplicationDbContext context)
+        public UserController(ApplicationDbContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         // GET: User/Login
         public IActionResult Login()
         {
+            // Kullanıcı zaten giriş yapmışsa, onu ana sayfaya yönlendir.
+            if (!string.IsNullOrEmpty(HttpContext.Session.GetString("UserId")))
+            {
+                return RedirectToAction("Index", "Home");
+            }
             return View();
         }
 
@@ -43,6 +54,8 @@ namespace FilmDiziSitesi.Controllers
             {
                 HttpContext.Session.SetString("UserId", user.Id.ToString());
                 HttpContext.Session.SetString("UserName", user.KullaniciAdi);
+                HttpContext.Session.SetString("UserEmail", user.Email);
+                HttpContext.Session.SetString("Role", user.Role ?? "User");
                 return RedirectToAction("Index", "Home");
             }
             else
@@ -123,7 +136,8 @@ namespace FilmDiziSitesi.Controllers
             }
 
             model.KayitTarihi = DateTime.Now;
-            model.Role = "User"; // Varsayılan rol
+            if (string.IsNullOrEmpty(model.Role))
+                model.Role = "User";
 
             _context.Users.Add(model);
             _context.SaveChanges();
@@ -144,6 +158,9 @@ namespace FilmDiziSitesi.Controllers
             var user = _context.Users.FirstOrDefault(u => u.Id == int.Parse(userId));
             if (user == null)
             {
+                // Session var ama kullanıcı DB'de yoksa, bu geçersiz bir session'dır.
+                // Session'ı temizle ve Login'e yönlendir.
+                HttpContext.Session.Clear();
                 return RedirectToAction("Login");
             }
 
@@ -170,23 +187,24 @@ namespace FilmDiziSitesi.Controllers
 
         // POST: User/EditProfile
         [HttpPost]
-        public IActionResult EditProfile(UserModel model)
+        public async Task<IActionResult> EditProfile(UserModel model)
         {
-            if (ModelState.IsValid)
+            var userInDb = await _context.Users.FindAsync(model.Id);
+            if (userInDb == null)
             {
-                var user = _context.Users.FirstOrDefault(u => u.Id == model.Id);
-                if (user != null)
-                {
-                    user.KullaniciAdi = model.KullaniciAdi;
-                    user.Email = model.Email;
-                    // Şifre değişikliği için ayrı kontrol eklenebilir
-
-                    _context.SaveChanges();
-                    TempData["SuccessMessage"] = "Profil başarıyla güncellendi!";
-                    return RedirectToAction("Profile");
-                }
+                TempData["ErrorMessage"] = "Kullanıcı bulunamadı.";
+                return RedirectToAction("Profile");
             }
-            return View(model);
+
+            userInDb.KullaniciAdi = model.KullaniciAdi;
+            userInDb.Email = model.Email;
+
+            await _context.SaveChangesAsync();
+
+            HttpContext.Session.SetString("UserName", userInDb.KullaniciAdi);
+
+            TempData["SuccessMessage"] = "Profil başarıyla güncellendi!";
+            return RedirectToAction("Profile");
         }
 
         // GET: User/ForgotPassword
@@ -258,6 +276,23 @@ namespace FilmDiziSitesi.Controllers
         {
             HttpContext.Session.Clear();
             return RedirectToAction("Index", "Home");
+        }
+
+        // PUT: api/users/{id}
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, [FromBody] UserModel updatedUser)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+            if (user == null)
+                return NotFound();
+
+            user.KullaniciAdi = updatedUser.KullaniciAdi;
+            user.Email = updatedUser.Email;
+            user.Sifre = updatedUser.Sifre;
+            user.Role = updatedUser.Role;
+            _context.SaveChanges();
+
+            return NoContent();
         }
     }
 

@@ -1,8 +1,8 @@
+@model FilmDiziSitesi.Models.UserModel
 @{
-    ViewData["Title"] = "Admin Giriş";
+    ViewData["Title"] = "Admin Kayıt Ol";
     Layout = null;
 }
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -22,7 +22,6 @@
             align-items: center;
             justify-content: center;
         }
-
         .auth-card {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
@@ -33,7 +32,6 @@
             max-width: 500px;
             margin: 0 auto;
         }
-
         .auth-title {
             color: white;
             font-size: 2rem;
@@ -41,13 +39,11 @@
             text-align: center;
             margin-bottom: 30px;
         }
-        
         .form-label {
             color: #b8b8b8;
             margin-bottom: 8px;
             font-weight: 500;
         }
-
         .form-control {
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -59,29 +55,33 @@
 <body>
     <div class="auth-container">
         <div class="auth-card">
-            <h1 class="auth-title">Admin Giriş</h1>
-
+            <h1 class="auth-title">Admin Kayıt Ol</h1>
             @if (ViewBag.Error != null)
             {
                 <div class="alert alert-danger">@ViewBag.Error</div>
             }
-            <form asp-action="Login" method="post">
+            <form asp-action="Register" method="post">
                 <div class="mb-3">
-                    <label for="email" class="form-label">E-posta</label>
-                    <input type="email" class="form-control" id="email" name="email" required />
+                    <label for="KullaniciAdi" class="form-label">Kullanıcı Adı</label>
+                    <input asp-for="KullaniciAdi" class="form-control" id="KullaniciAdi" required />
                 </div>
                 <div class="mb-3">
-                    <label for="sifre" class="form-label">Şifre</label>
-                    <input type="password" class="form-control" id="sifre" name="sifre" required />
+                    <label for="Email" class="form-label">E-posta</label>
+                    <input asp-for="Email" class="form-control" id="Email" type="email" required />
+                </div>
+                <div class="mb-3">
+                    <label for="Sifre" class="form-label">Şifre</label>
+                    <input asp-for="Sifre" class="form-control" id="Sifre" type="password" required />
+                </div>
+                <div class="mb-3">
+                    <label for="SifreTekrar" class="form-label">Şifre Tekrar</label>
+                    <input name="SifreTekrar" class="form-control" id="SifreTekrar" type="password" required />
                 </div>
                 <div class="d-flex justify-content-between align-items-center mt-4">
-                    <a asp-controller="Home" asp-action="Index" class="text-secondary">Siteye Dön</a>
-                    <button type="submit" class="btn btn-primary">Giriş Yap</button>
+                    <a asp-controller="Admin" asp-action="Login" class="text-secondary">Girişe Dön</a>
+                    <button type="submit" class="btn btn-primary">Kayıt Ol</button>
                 </div>
             </form>
-            <div class="mt-3 text-center">
-                <a asp-controller="Admin" asp-action="Register" class="btn btn-link text-light">Kayıt Ol (Admin Hesabı Aç)</a>
-            </div>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

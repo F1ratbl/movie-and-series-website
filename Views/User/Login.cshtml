@@ -6,8 +6,14 @@
 <style>
     .auth-container {
         min-height: 100vh;
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+        /* A more vibrant, cinema-themed background */
+        background-image: linear-gradient(rgba(22, 33, 62, 0.85), rgba(26, 26, 46, 0.9)), url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1625&q=80');
+        background-size: cover;
+        background-position: center;
         padding: 50px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
     .auth-card {
@@ -40,22 +46,40 @@
         font-size: 1.1rem;
     }
 
-    .form-floating {
+    .form-group {
         margin-bottom: 20px;
+    }
+    
+    .form-label {
+        color: #b8b8b8;
+        margin-bottom: 8px;
+        font-weight: 500;
     }
 
     .form-control {
         background: rgba(255, 255, 255, 0.1);
         border: 1px solid rgba(255, 255, 255, 0.2);
-        color: white;
+        color: #e0e0e0;
         height: 50px;
+        transition: none;
+    }
+
+    /* Override browser's autofill styles */
+    .form-control:-webkit-autofill,
+    .form-control:-webkit-autofill:hover,
+    .form-control:-webkit-autofill:focus,
+    .form-control:-webkit-autofill:active {
+        -webkit-text-fill-color: #e0e0e0 !important;
+        -webkit-box-shadow: 0 0 0 30px #1a2035 inset !important; /* Use a solid color from the theme */
+        box-shadow: 0 0 0 30px #1a2035 inset !important;
+        caret-color: #fff;
     }
 
     .form-control:focus {
         background: rgba(255, 255, 255, 0.15);
-        border-color: rgba(255, 255, 255, 0.3);
+        border-color: #4ecdc4;
         color: white;
-        box-shadow: none;
+        box-shadow: 0 0 0 0.25rem rgba(78, 205, 196, 0.25);
     }
 
     .form-floating label {
@@ -156,7 +180,7 @@
 <div class="auth-container">
     <div class="container">
         <div class="auth-card">
-            <h1 class="auth-title">DiziBox'a Hoş Geldiniz</h1>
+            <h1 class="auth-title">HDFilmCenneti'ne Hoş Geldiniz</h1>
             <p class="auth-subtitle">Film ve dizi dünyasına giriş yapın</p>
 
             @if (TempData["ErrorMessage"] != null)
@@ -175,49 +199,31 @@
                 </div>
             }
 
-            <form method="post">
-                <div class="form-floating">
-                    <input type="email" class="form-control" id="Email" name="Email" placeholder="name@example.com" required>
-                    <label for="Email">E-posta Adresi</label>
-                </div>
-                <div class="form-floating">
-                    <input type="password" class="form-control" id="Sifre" name="Sifre" placeholder="Şifre" required>
-                    <label for="Sifre">Şifre</label>
+            <form asp-action="Login" method="post">
+                <div class="form-group">
+                    <label asp-for="Email" class="form-label">E-posta Adresi</label>
+                    <input asp-for="Email" class="form-control" type="email" placeholder="ornek@eposta.com" required />
                 </div>
 
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="RememberMe" name="RememberMe">
-                        <label class="form-check-label text-white-50" for="RememberMe">
-                            Beni Hatırla
-                        </label>
-                    </div>
-                    <a href="/User/ForgotPassword" class="text-decoration-none">Şifremi Unuttum</a>
+                <div class="form-group">
+                    <label asp-for="Sifre" class="form-label">Şifre</label>
+                    <input asp-for="Sifre" class="form-control" type="password" placeholder="••••••••" required />
                 </div>
 
-                <button type="submit" class="btn btn-login">Giriş Yap</button>
-
-                <div class="divider">
-                    <span>veya</span>
-                </div>
-
-                <div class="social-login">
-                    <a href="#" class="social-btn">
-                        <i class="bi bi-google"></i>
-                    </a>
-                    <a href="#" class="social-btn">
-                        <i class="bi bi-facebook"></i>
-                    </a>
-                    <a href="#" class="social-btn">
-                        <i class="bi bi-twitter"></i>
-                    </a>
-                </div>
-
-                <div class="auth-links">
-                    <span class="text-white-50">Hesabınız yok mu?</span>
-                    <a href="/User/Register" class="ms-2">Hemen Kaydolun</a>
+                <div class="d-flex justify-content-between align-items-center mt-3">
+                    <a asp-controller="User" asp-action="ForgotPassword" class="text-link">Şifremi Unuttum</a>
+                    <button type="submit" class="btn btn-submit">Giriş Yap</button>
                 </div>
             </form>
+
+            <hr class="auth-divider">
+
+            <div class="text-center">
+                <p class="mb-0" style="color: #b8b8b8;">
+                    Hesabın yok mu? 
+                    <a asp-controller="User" asp-action="Register" class="text-link fw-bold">Kayıt Ol</a>
+                </p>
+            </div>
         </div>
     </div>
 </div>

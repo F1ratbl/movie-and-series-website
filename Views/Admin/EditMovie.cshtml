@@ -1,327 +1,111 @@
 @model FilmDiziSitesi.Models.MovieModel
 @{
     ViewData["Title"] = "Film Düzenle";
+    Layout = "~/Views/Admin/_AdminLayout.cshtml";
 }
 
-<style>
-    .edit-movie-container {
-        min-height: 100vh;
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-        padding: 30px 0;
-        color: white;
-    }
-
-    .edit-movie-card {
-        background: rgba(255, 255, 255, 0.05);
-        backdrop-filter: blur(10px);
-        border-radius: 20px;
-        padding: 40px;
-        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
-        border: 1px solid rgba(255, 255, 255, 0.18);
-        max-width: 800px;
-        margin: 0 auto;
-    }
-
-    .page-header {
-        background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-        font-size: 2.5rem;
-        font-weight: 700;
-        text-align: center;
-        margin-bottom: 30px;
-    }
-
-    .form-floating {
-        margin-bottom: 20px;
-    }
-
-    .form-control {
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: white;
-        height: 50px;
-    }
-
-    .form-control:focus {
-        background: rgba(255, 255, 255, 0.15);
-        border-color: rgba(255, 255, 255, 0.3);
-        color: white;
-        box-shadow: none;
-    }
-
-    .form-floating label {
-        color: #b8b8b8;
-    }
-
-    .form-floating > .form-control:focus ~ label,
-    .form-floating > .form-control:not(:placeholder-shown) ~ label {
-        color: #4ecdc4;
-    }
-
-    textarea.form-control {
-        height: 100px;
-        resize: vertical;
-    }
-
-    .btn-save {
-        background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
-        border: none;
-        color: white;
-        padding: 12px 30px;
-        font-size: 1.1rem;
-        font-weight: 600;
-        border-radius: 10px;
-        transition: all 0.3s ease;
-    }
-
-    .btn-save:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
-        color: white;
-    }
-
-    .btn-cancel {
-        background: rgba(255, 255, 255, 0.1);
-        border: 1px solid rgba(255, 255, 255, 0.2);
-        color: #b8b8b8;
-        padding: 12px 30px;
-        font-size: 1.1rem;
-        font-weight: 600;
-        border-radius: 10px;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        display: inline-block;
-    }
-
-    .btn-cancel:hover {
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-        text-decoration: none;
-    }
-
-    .error-message {
-        background: rgba(220, 53, 69, 0.2);
-        border: 1px solid rgba(220, 53, 69, 0.3);
-        color: #dc3545;
-        padding: 15px;
-        border-radius: 10px;
-        margin-bottom: 20px;
-    }
-
-    .form-section {
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 15px;
-        padding: 25px;
-        margin-bottom: 25px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .form-section h6 {
-        color: #4ecdc4;
-        font-weight: 600;
-        margin-bottom: 20px;
-        display: flex;
-        align-items: center;
-    }
-
-    .form-section h6 i {
-        margin-right: 10px;
-    }
-
-    .movie-preview {
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 15px;
-        padding: 20px;
-        margin-bottom: 25px;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        text-align: center;
-    }
-
-    .movie-preview img {
-        max-width: 200px;
-        max-height: 300px;
-        border-radius: 10px;
-        margin-bottom: 15px;
-        border: 2px solid rgba(255, 255, 255, 0.2);
-    }
-</style>
-
-<div class="edit-movie-container">
-    <div class="container">
-        <div class="edit-movie-card">
-            <h1 class="page-header">
-                <i class="bi bi-pencil-square me-3"></i>
-                Film Düzenle
-            </h1>
-
-            @if (TempData["ErrorMessage"] != null)
-            {
-                <div class="error-message">
-                    <i class="bi bi-exclamation-triangle me-2"></i>
-                    @TempData["ErrorMessage"]
-                </div>
-            }
-
-            @if (!string.IsNullOrEmpty(Model.AfişUrl))
-            {
-                <div class="movie-preview">
-                    <img src="@Model.AfişUrl" alt="@Model.Ad" onerror="this.style.display='none'" />
-                    <h5>@Model.Ad</h5>
-                    <p class="text-muted">@Model.Yil • @Model.Tür</p>
-                </div>
-            }
-
-            <form method="post">
-                <input type="hidden" asp-for="Id" />
-
-                <div class="form-section">
-                    <h6><i class="bi bi-info-circle"></i>Temel Bilgiler</h6>
+<div class="row">
+    <div class="col-md-8 offset-md-2">
+        <div class="card bg-dark text-light" style="border-color: #30363d;">
+            <div class="card-header" style="background-color: #161b22; border-bottom: 1px solid #30363d;">
+                <h4 class="mb-0">"@(Model.Ad)" Filmini Düzenle</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="EditMovie">
+                    <input type="hidden" asp-for="Id" />
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
                     <div class="row">
-                        <div class="col-md-8">
-                            <div class="form-floating">
-                                <input asp-for="Ad" class="form-control" placeholder="Film Adı" required>
-                                <label asp-for="Ad">Film Adı</label>
-                            </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Ad" class="form-label">Başlık</label>
+                            <input asp-for="Ad" class="form-control bg-dark text-white" />
+                            <span asp-validation-for="Ad" class="text-danger"></span>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-floating">
-                                <input asp-for="Yil" class="form-control" type="number" placeholder="Yıl" min="1900" max="2030" required>
-                                <label asp-for="Yil">Yıl</label>
-                            </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Tür" class="form-label">Tür (Virgülle ayırın)</label>
+                            <input asp-for="Tür" class="form-control bg-dark text-white" />
+                            <span asp-validation-for="Tür" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input asp-for="Tür" class="form-control" placeholder="Tür" required>
-                                <label asp-for="Tür">Tür</label>
-                            </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Yönetmen" class="form-label">Yönetmen</label>
+                            <input asp-for="Yönetmen" class="form-control bg-dark text-white" />
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input asp-for="Süre" class="form-control" placeholder="Süre (dakika)" type="number" min="1">
-                                <label asp-for="Süre">Süre (dakika)</label>
-                            </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Oyuncular" class="form-label">Oyuncular (virgülle ayırın)</label>
+                            <input asp-for="Oyuncular" class="form-control bg-dark text-white" />
                         </div>
                     </div>
-                </div>
-
-                <div class="form-section">
-                    <h6><i class="bi bi-people"></i>Yapım Bilgileri</h6>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input asp-for="Yönetmen" class="form-control" placeholder="Yönetmen">
-                                <label asp-for="Yönetmen">Yönetmen</label>
+                    <div class="form-section">
+                        <h6><i class="bi bi-people"></i>Yapım Bilgileri</h6>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Ülke" class="form-label">Ülke</label>
+                                <input asp-for="Ülke" class="form-control bg-dark text-white" />
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label asp-for="Dil" class="form-label">Dil</label>
+                                <input asp-for="Dil" class="form-control bg-dark text-white" />
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input asp-for="Oyuncular" class="form-control" placeholder="Oyuncular">
-                                <label asp-for="Oyuncular">Oyuncular</label>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="Bütçe" class="form-label">Bütçe</label>
+                                <input asp-for="Bütçe" type="number" class="form-control bg-dark text-white" />
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="GiseHasilati" class="form-label">Gişe Hasılatı</label>
+                                <input asp-for="GiseHasilati" type="number" class="form-control bg-dark text-white" />
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label asp-for="IzlenmeSayisi" class="form-label">İzlenme Sayısı</label>
+                                <input asp-for="IzlenmeSayisi" type="number" class="form-control bg-dark text-white" />
                             </div>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input asp-for="Ülke" class="form-control" placeholder="Ülke">
-                                <label asp-for="Ülke">Ülke</label>
+                        <div class="mb-3">
+                            <label asp-for="Açıklama" class="form-label"></label>
+                            <textarea asp-for="Açıklama" class="form-control bg-dark text-white" rows="4"></textarea>
+                            <span asp-validation-for="Açıklama" class="text-danger"></span>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3 mb-3">
+                                <label asp-for="Yil" class="form-label">Yıl</label>
+                                <input asp-for="Yil" type="number" class="form-control bg-dark text-white" />
+                                <span asp-validation-for="Yil" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label asp-for="Puan" class="form-label">Puan (1-10)</label>
+                                <input asp-for="Puan" type="number" step="0.1" class="form-control bg-dark text-white" />
+                                <span asp-validation-for="Puan" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label asp-for="Süre" class="form-label">Süre</label>
+                                <input asp-for="Süre" class="form-control bg-dark text-white" placeholder="02:30:00" />
+                                <span asp-validation-for="Süre" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-3 mb-3">
+                                <label asp-for="VizyonTarihi" class="form-label">Vizyon Tarihi</label>
+                                <input asp-for="VizyonTarihi" type="date" class="form-control bg-dark text-white" />
+                                <span asp-validation-for="VizyonTarihi" class="text-danger"></span>
                             </div>
                         </div>
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input asp-for="Dil" class="form-control" placeholder="Dil">
-                                <label asp-for="Dil">Dil</label>
-                            </div>
+                        <div class="mb-3">
+                            <label asp-for="AfişUrl" class="form-label">Afiş URL</label>
+                            <input asp-for="AfişUrl" class="form-control bg-dark text-white" />
+                            <span asp-validation-for="AfişUrl" class="text-danger"></span>
                         </div>
-                    </div>
-                </div>
-
-                <div class="form-section">
-                    <h6><i class="bi bi-graph-up"></i>İstatistikler</h6>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-floating">
-                                <input asp-for="Bütçe" class="form-control" placeholder="Bütçe ($)" type="number" min="0">
-                                <label asp-for="Bütçe">Bütçe ($)</label>
-                            </div>
+                        <div class="mb-3">
+                            <label asp-for="FragmanUrl" class="form-label">Fragman URL</label>
+                            <input asp-for="FragmanUrl" class="form-control bg-dark text-white" />
+                            <span asp-validation-for="FragmanUrl" class="text-danger"></span>
                         </div>
-                        <div class="col-md-4">
-                            <div class="form-floating">
-                                <input asp-for="GiseHasilati" class="form-control" placeholder="Gişe Hasılatı ($)" type="number" min="0">
-                                <label asp-for="GiseHasilati">Gişe Hasılatı ($)</label>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-floating">
-                                <input asp-for="IzlenmeSayisi" class="form-control" placeholder="İzlenme Sayısı" type="number" min="0">
-                                <label asp-for="IzlenmeSayisi">İzlenme Sayısı</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input asp-for="Puan" class="form-control" placeholder="Puan" type="number" min="0" max="10" step="0.1">
-                                <label asp-for="Puan">Puan (0-10)</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input asp-for="VizyonTarihi" class="form-control" type="date">
-                                <label asp-for="VizyonTarihi">Vizyon Tarihi</label>
-                            </div>
+                        <div class="mt-4 d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a asp-action="ManageMovies" class="btn btn-secondary">İptal</a>
+                            <button type="submit" class="btn btn-primary">Değişiklikleri Kaydet</button>
                         </div>
                     </div>
-                </div>
-
-                <div class="form-section">
-                    <h6><i class="bi bi-link-45deg"></i>Medya ve Açıklama</h6>
-                    <div class="form-floating">
-                        <textarea asp-for="Açıklama" class="form-control" placeholder="Film açıklaması"></textarea>
-                        <label asp-for="Açıklama">Film Açıklaması</label>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input asp-for="AfişUrl" class="form-control" placeholder="Afiş URL">
-                                <label asp-for="AfişUrl">Afiş URL</label>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="form-floating">
-                                <input asp-for="FragmanUrl" class="form-control" placeholder="Fragman URL">
-                                <label asp-for="FragmanUrl">Fragman URL</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="d-flex justify-content-between mt-4">
-                    <a asp-action="ManageMovies" class="btn btn-cancel">
-                        <i class="bi bi-arrow-left me-2"></i>
-                        İptal
-                    </a>
-                    <button type="submit" class="btn btn-save">
-                        <i class="bi bi-check-circle me-2"></i>
-                        Değişiklikleri Kaydet
-                    </button>
-                </div>
-            </form>
+                </form>
+            </div>
         </div>
     </div>
-</div>
-
-@section Scripts {
-    <script>
-        // Form submit olduğunda loading state ekle
-        document.querySelector('form').addEventListener('submit', function() {
-            const button = document.querySelector('.btn-save');
-            button.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Kaydediliyor...';
-            button.disabled = true;
-        });
-    </script>
-} 
+</div> 

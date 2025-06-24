@@ -3,47 +3,182 @@
     ViewData["Title"] = "Kayıt Ol";
 }
 
-<div class="container mt-5">
-    <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card bg-dark text-white">
-                <div class="card-header">
-                    <h3 class="text-center">Kayıt Ol</h3>
-                </div>
-                <div class="card-body">
-                    <form asp-action="Register" method="post">
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        
-                        <div class="form-group mb-3">
-                            <label for="KullaniciAdi">Kullanıcı Adı</label>
-                            <input type="text" class="form-control" id="KullaniciAdi" name="KullaniciAdi" required>
-                        </div>
-                        
-                        <div class="form-group mb-3">
-                            <label for="Email">Email</label>
-                            <input type="email" class="form-control" id="Email" name="Email" required>
-                        </div>
-                        
-                        <div class="form-group mb-3">
-                            <label for="Sifre">Şifre</label>
-                            <input type="password" class="form-control" id="Sifre" name="Sifre" required>
-                        </div>
-                        
-                        <div class="form-group mb-3">
-                            <label for="SifreTekrar">Şifre Tekrar</label>
-                            <input type="password" class="form-control" id="SifreTekrar" name="SifreTekrar" required>
-                        </div>
-                        
-                        <div class="form-group text-center">
-                            <button type="submit" class="btn btn-primary">Kayıt Ol</button>
-                        </div>
-                    </form>
-                    
-                    <div class="text-center mt-3">
-                        <p>Zaten hesabınız var mı? <a asp-action="Login" class="text-primary">Giriş Yap</a></p>
-                    </div>
-                </div>
+<style>
+    .auth-container {
+        min-height: 100vh;
+        /* A more vibrant, cinema-themed background */
+        background-image: linear-gradient(rgba(22, 33, 62, 0.85), rgba(26, 26, 46, 0.9)), url('https://images.unsplash.com/photo-1536440136628-849c177e76a1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1625&q=80');
+        background-size: cover;
+        background-position: center;
+        padding: 50px 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .auth-card {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        border: 1px solid rgba(255, 255, 255, 0.18);
+        max-width: 450px;
+        width: 100%;
+        margin: 0 auto;
+    }
+
+    .auth-title {
+        color: white;
+        font-size: 2rem;
+        font-weight: 700;
+        text-align: center;
+        margin-bottom: 15px;
+        background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .auth-subtitle {
+        color: #b8b8b8;
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 1.1rem;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-label {
+        color: #b8b8b8;
+        margin-bottom: 8px;
+        font-weight: 500;
+    }
+
+    .form-control {
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #e0e0e0;
+        height: 50px;
+        transition: none;
+    }
+
+    /* Override browser's autofill styles */
+    .form-control:-webkit-autofill,
+    .form-control:-webkit-autofill:hover,
+    .form-control:-webkit-autofill:focus,
+    .form-control:-webkit-autofill:active {
+        -webkit-text-fill-color: #e0e0e0 !important;
+        -webkit-box-shadow: 0 0 0 30px #1a2035 inset !important; /* Use a solid color from the theme */
+        box-shadow: 0 0 0 30px #1a2035 inset !important;
+        caret-color: #fff;
+    }
+
+    .form-control:focus {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: #4ecdc4;
+        color: white;
+        box-shadow: 0 0 0 0.25rem rgba(78, 205, 196, 0.25);
+    }
+
+    .btn-submit {
+        background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+        border: none;
+        color: white;
+        padding: 12px 30px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        border-radius: 10px;
+        width: 100%;
+        transition: all 0.3s ease;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+    }
+
+    .auth-divider {
+        margin: 25px 0;
+        border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .text-link {
+        color: #4ecdc4;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .text-link:hover {
+        color: #ff6b6b;
+    }
+
+    .alert {
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 1px solid transparent;
+        border-radius: .25rem;
+    }
+
+    .alert-danger {
+        color: #f8d7da;
+        background-color: #dc35452e;
+        border-color: #dc35454a;
+    }
+
+</style>
+
+<div class="auth-container">
+    <div class="auth-card">
+        <h1 class="auth-title">HDFilmCenneti'ne Kayıt Ol</h1>
+        <p class="auth-subtitle">Aramıza katıl, maceraya başla!</p>
+
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger">
+                @TempData["ErrorMessage"]
             </div>
+        }
+
+        <form asp-action="Register" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+            
+            <div class="form-group">
+                <label asp-for="KullaniciAdi" class="form-label">Kullanıcı Adı</label>
+                <input asp-for="KullaniciAdi" class="form-control" placeholder="Kullanıcı adınızı girin" required />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Email" class="form-label">E-posta Adresi</label>
+                <input asp-for="Email" class="form-control" type="email" placeholder="ornek@eposta.com" required />
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Sifre" class="form-label">Şifre</label>
+                <input asp-for="Sifre" class="form-control" type="password" placeholder="••••••••" required />
+            </div>
+
+            <div class="form-group">
+                <label for="SifreTekrar" class="form-label">Şifre Tekrar</label>
+                <input name="SifreTekrar" class="form-control" type="password" placeholder="••••••••" required />
+            </div>
+
+            <button type="submit" class="btn btn-submit mt-4">Kayıt Ol</button>
+        </form>
+
+        <hr class="auth-divider">
+
+        <div class="text-center">
+            <p class="mb-0" style="color: #b8b8b8;">
+                Zaten bir hesabın var mı? 
+                <a asp-controller="User" asp-action="Login" class="text-link fw-bold">Giriş Yap</a>
+            </p>
         </div>
     </div>
-</div> 
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+} 

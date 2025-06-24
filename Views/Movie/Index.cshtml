@@ -116,11 +116,11 @@
                                     </div>
                                     <div class="mt-2">
                                         <small class="text-muted">
-                                            <i class="bi bi-clock"></i> @movie.Süre.ToString(@"hh\:mm")
-                                            <i class="bi bi-eye ms-2"></i> @movie.IzlenmeSayisi.ToString("N0")
+                                            <i class="bi bi-clock"></i> @(movie.Süre ?? "Belirtilmemiş")
+                                            <i class="bi bi-eye ms-2"></i> @(movie.IzlenmeSayisi?.ToString("N0") ?? "N/A")
                                         </small>
                                     </div>
-                                    <button type="button" class="btn btn-primary mt-3 w-100" onclick="showMovieDetails(@movie.Id, '@movie.Ad.Replace("'", "\\'")', '@movie.Açıklama.Replace("'", "\\'")', '@movie.Tür.Replace("'", "\\'")', @movie.Yil, @movie.Puan, '@movie.Yönetmen.Replace("'", "\\'")', '@movie.Oyuncular.Replace("'", "\\'")', '@movie.Ülke.Replace("'", "\\'")', '@movie.Dil.Replace("'", "\\'")', @movie.Bütçe, @movie.GiseHasilati, @movie.IzlenmeSayisi, '@movie.VizyonTarihi.ToString("dd.MM.yyyy")', '@movie.Süre.ToString(@"hh\:mm")', '@movie.FragmanUrl.Replace("'", "\\'")', '@movie.AfişUrl.Replace("'", "\\'")')">
+                                    <button type="button" class="btn btn-primary mt-3 w-100" onclick="showMovieDetails(@movie.Id, '@movie.Ad.Replace("'", "\\'")', '@((movie.Açıklama ?? "").Replace("'", "\\'") )', '@movie.Tür.Replace("'", "\\'")', @movie.Yil, @movie.Puan, '@((movie.Yönetmen ?? "").Replace("'", "\\'") )', '@((movie.Oyuncular ?? "").Replace("'", "\\'") )', '@((movie.Ülke ?? "").Replace("'", "\\'") )', '@((movie.Dil ?? "").Replace("'", "\\'") )', @(movie.Bütçe ?? 0), @(movie.GiseHasilati ?? 0), @(movie.IzlenmeSayisi ?? 0), '@(movie.VizyonTarihi?.ToString("dd.MM.yyyy") ?? "")', '@(movie.Süre?.Replace("'", "\\'") ?? "")', '@((movie.AfişUrl ?? "").Replace("'", "\\'") )', '@((movie.FragmanUrl ?? "").Replace("'", "\\'") )')">
                                         Detayları Gör & Puanla
                                     </button>
                                 </div>
@@ -241,23 +241,6 @@
                             </div>
                         </div>
                         
-                        <!-- Puanlama Sistemi -->
-                        <div class="mb-4">
-                            <h5>Bu Filmi Puanla</h5>
-                            <div class="rating-input mb-3">
-                                <div class="star-rating">
-                                    <i class="bi bi-star" data-rating="1" onclick="rateMovie(1)"></i>
-                                    <i class="bi bi-star" data-rating="2" onclick="rateMovie(2)"></i>
-                                    <i class="bi bi-star" data-rating="3" onclick="rateMovie(3)"></i>
-                                    <i class="bi bi-star" data-rating="4" onclick="rateMovie(4)"></i>
-                                    <i class="bi bi-star" data-rating="5" onclick="rateMovie(5)"></i>
-                                </div>
-                                <span class="ms-2">Puanınızı seçin</span>
-                            </div>
-                            <button type="button" class="btn btn-success" onclick="submitRating()">
-                                <i class="bi bi-check-circle"></i> Puanı Gönder
-                            </button>
-                        </div>
                     </div>
                 </div>
             </div>
