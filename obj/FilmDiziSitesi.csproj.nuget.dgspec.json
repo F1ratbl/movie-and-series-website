@@ -1,25 +1,27 @@
 {
   "format": 1,
   "restore": {
-    "/Users/firat/movieWeb/FilmDiziSitesi/FilmDiziSitesi.csproj": {}
+    "C:\\Users\\Mehmet\\Desktop\\Yeni klasör\\movie-and-series-website\\FilmDiziSitesi.csproj": {}
   },
   "projects": {
-    "/Users/firat/movieWeb/FilmDiziSitesi/FilmDiziSitesi.csproj": {
+    "C:\\Users\\Mehmet\\Desktop\\Yeni klasör\\movie-and-series-website\\FilmDiziSitesi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/firat/movieWeb/FilmDiziSitesi/FilmDiziSitesi.csproj",
+        "projectUniqueName": "C:\\Users\\Mehmet\\Desktop\\Yeni klasör\\movie-and-series-website\\FilmDiziSitesi.csproj",
         "projectName": "FilmDiziSitesi",
-        "projectPath": "/Users/firat/movieWeb/FilmDiziSitesi/FilmDiziSitesi.csproj",
-        "packagesPath": "/Users/firat/.nuget/packages/",
-        "outputPath": "/Users/firat/movieWeb/FilmDiziSitesi/obj/",
+        "projectPath": "C:\\Users\\Mehmet\\Desktop\\Yeni klasör\\movie-and-series-website\\FilmDiziSitesi.csproj",
+        "packagesPath": "C:\\Users\\Mehmet\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Mehmet\\Desktop\\Yeni klasör\\movie-and-series-website\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/firat/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\Mehmet\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net9.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -57,6 +59,10 @@
               "suppressParent": "All",
               "target": "Package",
               "version": "[9.0.5, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[8.1.2, )"
             }
           },
           "imports": [
@@ -78,7 +84,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/9.0.300/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
